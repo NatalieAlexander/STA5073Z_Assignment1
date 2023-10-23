@@ -1,0 +1,31 @@
+---
+about:
+  template: trestles
+  image-width: 10em
+  image-shape: round
+---
+
+<style>
+.title {
+  font-size: 30px;
+  font-family: Arial, sans-serif; /* Change to a modern font */
+  text-align: center; /* Center align text */
+  color: grey;
+}
+</style>
+
+
+![](images/profile.jpg){height=100 fig-align="center"}
+
+##
+<div style="text-align:center">
+## Natalie Bianca Alexander
+</div>
+Welcome to my website, where I proudly present my Data Science for Industry course (STA5073Z) project 2023. The primary goal for this project was to construct predictive models that take a sentence of text as input and return a prediction of which South African president was the source of that sentence. 
+[Click here to redirect to the GitHub repository](https://github.com/NatalieAlexander/STA5073Z_Assignment1)
+##
+
+<div style="text-align:center">
+## Data
+The dataset includes a corpus of text documents containing the State of the Nation Address (SONA) delivered by the President of South Africa between the years 1994 to 2023. 
+</div>

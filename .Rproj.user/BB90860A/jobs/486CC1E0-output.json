@@ -1,0 +1,3 @@
+[2,"\n"]
+[1,"Error in inDL(x, as.logical(local), as.logical(now), ...) : \r\n  unable to load shared object 'C:/Users/natal/AppData/Local/R/win-library/4.3/rlang/libs/x64/rlang.dll':\r\n  LoadLibrary failure:  The specified procedure could not be found.\r\nCalls: :: ... namespaceImport -> loadNamespace -> library.dynam -> dyn.load -> inDL\r\nExecution halted\r\n"]
+[1,"\nR installation:\n  Version: 3.6.1\n  Path: C:/Users/natal/anaconda3/envs/rminiconda/lib/R\n  LibPaths:\n    - C:/Users/natal/AppData/Local/R/win-library/4.3\n    - C:/Users/natal/anaconda3/envs/rminiconda/Lib/R/library\n  knitr: 1.44\n  rmarkdown: (None)\n\nThe rmarkdown package is not available in this R installation.\nInstall with install.packages(\"rmarkdown\")\n\n"]

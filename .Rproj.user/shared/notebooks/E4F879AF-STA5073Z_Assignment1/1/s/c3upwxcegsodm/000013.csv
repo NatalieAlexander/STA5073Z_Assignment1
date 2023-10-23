@@ -1,0 +1,7 @@
+"2","Warning in gzfile(file, ""wb"") :"
+"2","
+ "
+"2"," cannot open compressed file 'C:/Users/natal/OneDrive - University of Cape Town/UCT/Data_science_for_industry/Individual_Assignment/Assignment1_STA5073Z/STA5073Z_Assignment1/.Rproj.user/shared/notebooks/E4F879AF-STA5073Z_Assignment1/1/s/c3upwxcegsodm_t/b54f50a75e8c4a3cbc22171f0c96e0b7.snapshot', probable reason 'No such file or directory'
+"
+"2","Error in gzfile(file, ""wb"") : cannot open the connection
+"

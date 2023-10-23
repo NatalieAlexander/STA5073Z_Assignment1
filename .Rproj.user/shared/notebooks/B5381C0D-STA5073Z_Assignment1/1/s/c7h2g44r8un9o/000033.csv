@@ -1,0 +1,5 @@
+"0",""
+"0","#remove outliers: Motlanthe and deKlerk - only 1 record"
+"0","sona = sona %>% filter(!(president_label %in% c(""Motlanthe"", ""deKlerk"")))"
+"0",""
+"0",""

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Natalie Alexander">
+<meta name="dcterms.date" content="2023-10-11">
+
+<title>today - Processing the data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">today</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./alxnat.qmd" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html" rel="" target="">
+ <span class="menu-text">Natalie Bianca Alexander</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-pre_processing" id="toc-data-pre_processing" class="nav-link active" data-scroll-target="#data-pre_processing">2. Data pre_processing</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Processing the data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Natalie Alexander </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 11, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>#1. Libraries</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytext)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ forcats   1.0.0     ✔ purrr     1.0.2
+✔ ggplot2   3.4.3     ✔ readr     2.1.4
+✔ lubridate 1.9.3     ✔ tibble    3.2.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+</div>
+<section id="data-pre_processing" class="level1">
+<h1>2. Data pre_processing</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read in text data files and organise these into a data frame</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>filenames <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'1994_post_elections_Mandela.txt'</span>, <span class="st">'1994_pre_elections_deKlerk.txt'</span>, <span class="st">'1995_Mandela.txt'</span>, <span class="st">'1996_Mandela.txt'</span>, <span class="st">'1997_Mandela.txt'</span>, <span class="st">'1998_Mandela.txt'</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">'1999_post_elections_Mandela.txt'</span>, <span class="st">'1999_pre_elections_Mandela.txt'</span>, <span class="st">'2000_Mbeki.txt'</span>, <span class="st">'2001_Mbeki.txt'</span>, <span class="st">'2002_Mbeki.txt'</span>, <span class="st">'2003_Mbeki.txt'</span>, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">'2004_post_elections_Mbeki.txt'</span>, <span class="st">'2004_pre_elections_Mbeki.txt'</span>, <span class="st">'2005_Mbeki.txt'</span>, <span class="st">'2006_Mbeki.txt'</span>, <span class="st">'2007_Mbeki.txt'</span>, <span class="st">'2008_Mbeki.txt'</span>, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>               <span class="st">'2009_post_elections_Zuma.txt'</span>, <span class="st">'2009_pre_elections_ Motlanthe.txt'</span>, <span class="st">'2010_Zuma.txt'</span>, <span class="st">'2011_Zuma.txt'</span>, <span class="st">'2012_Zuma.txt'</span>, <span class="st">'2013_Zuma.txt'</span>, </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>               <span class="st">'2014_post_elections_Zuma.txt'</span>, <span class="st">'2014_pre_elections_Zuma.txt'</span>, <span class="st">'2015_Zuma.txt'</span>, <span class="st">'2016_Zuma.txt'</span>, <span class="st">'2017_Zuma.txt'</span>, <span class="st">'2018_Ramaphosa.txt'</span>, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>               <span class="st">'2019_post_elections_Ramaphosa.txt'</span>, <span class="st">'2019_pre_elections_Ramaphosa.txt'</span>, <span class="st">'2020_Ramaphosa.txt'</span>, <span class="st">'2021_Ramaphosa.txt'</span>, <span class="st">'2022_Ramaphosa.txt'</span>, <span class="st">'2023_Ramaphosa.txt'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#empty vector to append data</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>this_speech <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#append speech data to "this_speech" vector</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_post_elections_Mandela.txt'</span>, <span class="at">nchars =</span> <span class="dv">27050</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1994_pre_elections_deKlerk.txt'</span>, <span class="at">nchars =</span> <span class="dv">12786</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1995_Mandela.txt'</span>, <span class="at">nchars =</span> <span class="dv">39019</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1996_Mandela.txt'</span>, <span class="at">nchars =</span> <span class="dv">39524</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1997_Mandela.txt'</span>, <span class="at">nchars =</span> <span class="dv">37489</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">6</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1998_Mandela.txt'</span>, <span class="at">nchars =</span> <span class="dv">45247</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">7</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_post_elections_Mandela.txt'</span>, <span class="at">nchars =</span> <span class="dv">34674</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">8</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/1999_pre_elections_Mandela.txt'</span>, <span class="at">nchars =</span> <span class="dv">41225</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2000_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">37552</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">10</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2001_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">41719</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">11</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2002_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">50544</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">12</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2003_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">58284</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">13</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_post_elections_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">34590</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">14</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2004_pre_elections_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">39232</span>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">15</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2005_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">54635</span>)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">16</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2006_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">48643</span>)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">17</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2007_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">48641</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">18</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2008_Mbeki.txt'</span>, <span class="at">nchars =</span> <span class="dv">44907</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">19</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_post_elections_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">31101</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2009_pre_elections_Motlanthe.txt'</span>, <span class="at">nchars =</span> <span class="dv">47157</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">21</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2010_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">26384</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">22</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2011_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">33281</span>)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">23</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2012_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">33376</span>)</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">24</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2013_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">36006</span>)</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">25</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_post_elections_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">29403</span>)</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">26</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2014_pre_elections_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">36233</span>)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">27</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2015_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">32860</span>)</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">28</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2016_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">32464</span>)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">29</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2017_Zuma.txt'</span>, <span class="at">nchars =</span> <span class="dv">35981</span>)</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">30</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2018_Ramaphosa.txt'</span>, <span class="at">nchars =</span> <span class="dv">33290</span>)</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">31</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_post_elections_Ramaphosa.txt'</span>, <span class="at">nchars =</span> <span class="dv">42112</span>)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">32</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2019_pre_elections_Ramaphosa.txt'</span>, <span class="at">nchars =</span> <span class="dv">56960</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">33</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2020_Ramaphosa.txt'</span>, <span class="at">nchars =</span> <span class="dv">47910</span>)</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">34</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2021_Ramaphosa.txt'</span>, <span class="at">nchars =</span> <span class="dv">43352</span>)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">35</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt'</span>, <span class="at">nchars =</span> <span class="dv">52972</span>)</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>this_speech[<span class="dv">36</span>] <span class="ot">&lt;-</span> <span class="fu">readChar</span>(<span class="st">'https://raw.githubusercontent.com/iandurbach/datasci-fi/master/data/sona/2022_Ramaphosa.txt'</span>, <span class="at">nchars =</span> <span class="dv">52972</span>)</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="co">#convert vector to data frame</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>sona <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">filename =</span> filenames, <span class="at">speech =</span> this_speech, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="co">#extract year for each speech</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>sona<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">str_sub</span>(sona<span class="sc">$</span>filename, <span class="at">start =</span> <span class="dv">1</span>, <span class="at">end =</span> <span class="dv">4</span>)</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="co">#extract president for each speech</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>sona<span class="sc">$</span>president_13 <span class="ot">&lt;-</span> <span class="fu">str_remove_all</span>(<span class="fu">str_extract</span>(sona<span class="sc">$</span>filename, <span class="st">"[dA-Z].*</span><span class="sc">\\</span><span class="st">."</span>), <span class="st">"</span><span class="sc">\\</span><span class="st">."</span>)</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="co"># clean the sona dataset by adding the date and removing unnecessary text</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>replace_reg <span class="ot">&lt;-</span> <span class="st">'(http.*?(</span><span class="sc">\\</span><span class="st">s|.$))|(www.*?(</span><span class="sc">\\</span><span class="st">s|.$))|&amp;amp;|&amp;lt;|&amp;gt;|</span><span class="sc">\n</span><span class="st">'</span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a><span class="co">#some processing</span></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>sona <span class="ot">&lt;-</span>sona <span class="sc">%&gt;%</span></span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">speech =</span> <span class="fu">str_replace_all</span>(speech, replace_reg , <span class="st">' '</span>)</span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_sub</span>(speech, <span class="at">start=</span><span class="dv">1</span>, <span class="at">end=</span><span class="dv">30</span>)</span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">"February"</span>, <span class="st">"02"</span>)</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">"June"</span>, <span class="st">"06"</span>)</span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">"Feb"</span>, <span class="st">"02"</span>)</span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">"May"</span>, <span class="st">"05"</span>)</span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">"Jun"</span>, <span class="st">"06"</span>)</span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">"Thursday, "</span>,<span class="st">""</span>)</span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">' '</span>, <span class="st">'-'</span>)        </span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">"[A-z]"</span>,<span class="st">''</span>)</span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">'-----'</span>, <span class="st">''</span>)</span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">'----'</span>, <span class="st">''</span>)</span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">'---'</span>, <span class="st">''</span>)</span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>         ,<span class="at">date =</span> <span class="fu">str_replace_all</span>(date, <span class="st">'--'</span>, <span class="st">''</span>)</span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a><span class="co">#save as rds object</span></span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(sona, <span class="at">file =</span> <span class="st">"data//preprocessed_sona.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,27 @@
+"0","history <- nn_model %>% fit(
+ bag_of_words_train_features, bag_of_words_train_target,
+  epochs = 30,
+  batch_size = 5,
+  shuffle = TRUE
+  )
+"
+"1","Epoch 1/30
+"
+"2","Error in py_call_impl(callable, call_args$unnamed, call_args$named) : 
+  ValueError: in user code:
+
+<...truncated...>y"", line 277, in __call__
+        loss_value = loss_obj(y_t, y_p, sample_weight=sw)
+    File ""C:\Users\natal\ANACON~1\envs\RMINIC~1\lib\site-packages\keras\src\losses.py"", line 143, in __call__
+        losses = call_fn(y_true, y_pred)
+    File ""C:\Users\natal\ANACON~1\envs\RMINIC~1\lib\site-packages\keras\src\losses.py"", line 270, in call  **
+        return ag_fn(y_true, y_pred, **self._fn_kwargs)
+    File ""C:\Users\natal\ANACON~1\envs\RMINIC~1\lib\site-packages\keras\src\losses.py"", line 2221, in categorical_crossentropy
+        return backend.categorical_crossentropy(
+    File ""C:\Users\natal\ANACON~1\envs\RMINIC~1\lib\site-packages\keras\src\backend.py"", line 5575, in categorical_crossentropy
+        target.shape.assert_is_compatible_with(output.shape)
+
+    ValueError: Shapes (5, 4, 2) and (5, 4) are incompatible
+
+[90mRun ]8;;rstudio:run:reticulate::py_last_error()`reticulate::py_last_error()`]8;; for details.[39m
+"

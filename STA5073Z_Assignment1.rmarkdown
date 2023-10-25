@@ -4,33 +4,49 @@ subtitle: "Assignment 1"
 author: "Natalie Bianca Alexander"
 format: 
   html:
+    page-layout: article
+    grid:
+      margin-width:	5px
+      gutter-width: 5em
     embed-resources: true
     toc: true
     toc-location: left
     number-sections: true
-    number-depth: 3
+    number-depth: 4
     theme: journal
 execute:
   echo: false
   cache: true
+bibliography: references.bib
+csl: data/ieee-with-url.csl
 ---
 
 ```{r setup, include=FALSE, eval=T}
 
-knitr::opts_chunk$set(echo =F, warnings=F, message=F)
+knitr::opts_chunk$set(echo =F, 
+                      warnings=F,
+                      message=F, 
+                      options(digits=3))
 
 ```
 
 ```{r libraries, include=F, eval=T}
 
 #list of libraries to load
-packages <- c("stringr", "tidytext", "tidyr", "tidyverse", "dplyr", "ggplot2",
-              "readr", "lubridate", "caret", "wordcloud", "rpart", "tree",
-              "rpart.plot", "e1071", "randomForest",
-              "gbm", "MLmetrics", "xgboost", "gridExtra", "knitr")
+packages <- c("stringr", "tidytext", 
+              "tidyr", "tidyverse", 
+              "dplyr", "ggplot2",
+              "readr", "lubridate", 
+              "caret", "wordcloud", 
+              "rpart", "tree",
+              "rpart.plot", 
+              "e1071", "randomForest",
+              "gbm", "MLmetrics", 
+              "xgboost", "gridExtra", 
+              "knitr")
 
-##check if package is installed, if not then install package
-##uncomment if required
+#CHECK IF PACKAGE IS INSTALLED - UNCOMMENT IF REQUIRED
+#uncomment if required
 # for (package in packages) {
 #   if (!require(package, character.only = TRUE)) {
 #     install.packages(package)
@@ -42,33 +58,34 @@ lapply(packages, library, character.only = TRUE)
 
 ################################################################################
 
+#UCOMMENT BELOW IF KERAS NEURAL NETWORK MODELS WILL BE BUILT, OTHERWISE LOAD THE RDS AND RDATA OBJECTS
+
 # #install remotes
-# #uncomment if required
 # install.packages("remotes")
 # remotes::install_github(sprintf("rstudio/%s",c("reticulate", "tensorflow", "keras")))
 
 
-# Load the reticulate package
+# #Load the reticulate package
 #library(reticulate)
 
-# Activate the conda environment in R-studio
-#use_condaenv('rminiconda') #rename to your environment
+# #Activate the conda environment in R-studio
+#use_condaenv('rminiconda') #RENAME to your environment
 
-# Load the tensorflow library
+# #Load the tensorflow library
 #library(tensorflow)
 
-# Install tensorflow in the rminiconda environment
-#install_tensorflow(envname = 'rminiconda') #rename to your environment
+# # Install tensorflow in the rminiconda environment
+#install_tensorflow(envname = 'rminiconda') #RENAME to your environment
 
-# Check if tensorflow is active
+# #Check if tensorflow is active
 #tf$constant("Hello Tensorflow")
 
-#load library keras
+# #load library keras
 #library(keras)
-
 ```
 
 ```{r dataprocess, eval=T, include=F}
+
 
 #load in data
 sona = readRDS("data/preprocessed_sona.rds")
@@ -115,41 +132,53 @@ sona = sona %>% filter(!(president_label %in% c("Motlanthe", "deKlerk")))
 
 # Abstract
 
-Text mining refers to the process of transforming unstructured text data into structured clusters of information. This project explores a specific aspect of text mining known as authorship attribution, which involves analyzing various linguistic and stylistic features of text to predict its author. This project assesses transcription data containing the speeches delivered by South African presidents during the State of the Nation Address (SONA) from 1994 to 2023. The primary goal was to develop a classification model that can take a sentence from a SONA speech as input and correctly predict the president who said it. Various models were evaluated in this project, such as Classification Trees, and Random Forests, in addition to XGBoost  - , Naïve Bayesian- and feed forward Neural Network models. However, I find that .... outperformed all other models with a test ....F1-score of...
+Text mining refers to the process of transforming unstructured text data into structured clusters of information. This project explores a specific aspect of text mining known as authorship attribution, which involves analyzing linguistic and stylistic features of text to predict its author. This project uses transcription data from South African State of the Nation Address (SONA) speeches, delivered by presidents between 1994 to 2023. The primary goal was to develop a classification model that takes a sentence from a SONA speech as input and correctly predicts the president who said it. Various models were trained, such as Classification Trees, and Random Forests, in addition to XGBoost- , Naïve Bayesian- and Feed Forward Neural Network models. I find that the neural net model, with TF-IDF features outperformed all other models with a test F1-score of 0.632 and a test accuracy of 0.639.
 
 # Introduction
 
-Text mining is a branch of Artificial Intelligence (AI) that aims to transform unstructured text data into structured formats (Ibm.com, 2023)^1^. Text mining employs a variety of statistical and machine learning methods, including deep learning algorithms. These methods are used to uncover textual patterns, trends, and hidden relationships within unstructured data.
+Text mining is a branch of Artificial Intelligence (AI) that aims to transform unstructured text data into structured formats, and aims to uncover textual patterns within unstructured data [@ibm2023].
 
-While traditional text mining relied solely on machine learning algorithms, modern text mining also employs sophisticated methods of Natural Language Processing (NLP) such as parsing and part-of-speech tagging (Greenbook.org, 2017)^2^. This advancement in text mining is largely attributed to the exponential growth in data, with approximately 80% of global data residing in unstructured formats. This vast amount of data has necessitated the use of text mining, making it a significant task in data analytics.
+Modern text mining employs machine learning methods and Natural Language Processing (NLP) e.g., part-of-speech tagging [@greenbook2017]. Advancements in text mining is largely attributed to the exponential growth in data, with approximately 80% of global data residing in unstructured formats. This vast amount of data necessitated the use of text mining in data analytics.
 
-Text mining is particularly useful in large organizations where decision-making is central and time is limiting (Ibm.com, 2023)^1^. For example, banks employ text mining in risk management to scrutinize changes in the sentiment of financial reports, which may provide insight on potential investments.
+Text mining is particularly useful in large organizations where decision-making is central and time is limiting [@ibm2023]. The many applications of text mining has led to the development of several models, including supervised, and unsupervised methods [@dogra2022]. However, the choice of the most effective model is a complex task.
 
-The many applications of text mining across various domains has led to the development of several models, including supervised, and unsupervised methods (Dogra et al., 2022)^3^. However, determining the most appropriate and effective model for a specific text mining task remains a complex and nuanced challenge.
-
-The aim of this project is to identify the most effective classification model for authorship attribution, which involves determining the author of a given document (Mohamed Amine Boukhaled and Jean-Gabriel Ganascia, 2017)^4^. This project specifically focuses on analyzing transcription text data from speeches delivered by South African presidents during the State of the Nation Address (SONA) from 1994 to 2023 (www.gov.za, 2023)^5^. SONA serves as an annual opening to South African Parliament, where the President reports on the socio-economic state of the nation to a joint sitting of Parliament. The main objective is to train a model that can take a sentence from a SONA speech and correctly classify which president said it.
+The aim of this project is to identify the most effective classification model to predict which present said a specific sentence. The models are trained on transcription data that includes the State of the Nation Address (SONA) speeches delivered by presidents between 1994 to 2023 [@govza2023]. SONA serves as an annual opening to South African Parliament, where the President reports on the socio-economic state of the nation to a joint sitting of Parliament. The main objective is to train a model that has relatively good test- F1-score and accuracy.
 
 # Literature Review
 
-Several studies have used machine learning methods for author classification. These techniques include Support Vector Machines (SVMs), Decision Trees, Random Forests (RF), and Neural Networks (NNs), to name a few. The choice of model often depends on the nature of the data and the specific requirements of the task.
+Several studies have used machine learning methods for author classification [@boukhaled2017]. These techniques include Logistic Regression (LR), Random Forests (RF), and Neural Networks (NN). The choice of model depends on the nature of the data and the specific task requirements.
 
-Feature selection plays a crucial role in author classification, where features are broadly categorized into lexical features (e.g., word usage) and syntactic features (e.g., part-of-speech tags). Some studies have also explored semantic features (e.g., topics and sentiments).
+Feature selection plays an important role in author classification, where features are broadly categorized into lexical features (e.g., word usage) and syntactic features (e.g., part-of-speech tags). Some studies have also used semantic features (e.g., topics and sentiments).
 
-An article by Shukri, (2021)^6^ suggests a method for author classification, by training models on Arabic opinion articles. The study collected 8109 articles from 428 authors for the period 2016 to 2021. Their NN model achieved the highest accuracy of 81.1%.
+An article by Shukri, (2021) [@shukri2021] suggests a method for author classification, by training models on 8109 articles from 428 authors for the period 2016 to 2021. Their NN model achieved the highest accuracy of 81.1%.
 
-Another article by Bauersfeld et al., (2023)^7^ proposed a transformer-based, neural-network architecture that uses text content and author names in the bibliography to determine the author of an anonymous manuscript. The authors used all research papers publicly available on arXiv and achieved a 73% accuracy rate.
+Bauersfeld et al., (2023) [@bauersfeld2023] proposed a transformer-based, neural-network architecture that uses text content and author names in the bibliography to determine the author of an anonymous manuscript. The authors used all research papers publicly available on arXiv and achieved a 73% accuracy rate.
 
-A similar paper by Khalid, (2021)^8^ performed author prediction on 210 000 anonymous, news headlines from HuffPost (2012-2022). The study used Bag of Words (BoW) and Latent Semantic Analysis (LSA) features as input to train classification algorithms such as LR and RF. The study found that the LR model trained on all features outperformed all other models with an accuracy of 94.9%.
+A similar paper by Khalid (2021) [@khalid2021] performed author prediction on 210 000 anonymous, news headlines. The study used Bag-of-Words (BoW) and Latent Semantic Analysis (LSA) features as input to train an LR and RF. The study found that the LR model outperformed all other models with an accuracy of 94.9%.
 
-These manuscripts demonstrate the potential of text mining in various applications. These papers also highlight the variety of author-classification techniques available. However, we also note the challenges in applying these techniques, such as the need for large datasets, as well as the ability of these models to discriminate between content-related features and author-specific features.
+These papers highlight the variety of author-classification techniques available. However, we also note the challenges in applying these techniques, such as the need for large datasets, as well as the ability of these models to discriminate between content-related features and author-specific features.
 
 # Data
 
 ## Data Source and Description
 
-The SONA dataset is publicly available on the South African government website (www.gov.za, 2023)^5^. The data contains the speeches delivered by South African presidents at the annual State of the Nation Address (SONA) from 1994 to 2023.
+The SONA dataset is publicly available on the South African government website [@govza2023]. The data contains the speeches delivered by South African presidents at the annual State of the Nation Address (SONA) from 1994 to 2023.
 
-Seven speeches are available for former president Mandela (1994-1999). Ten speeches are available for former president Mbeki (2000-2008). Ten speeches are also available for former president Zuma (2009-2017). The current president (Ramaphosa) has a total of seven speeches to date (2018-2023). Two outliers exist, namely one speech for former president deKlerk (1994) and former president Motlanthe (2009).
+The following data is available:
+
+-   Mandela (1994-1999) - 7 speeches
+
+-   Mbeki (2000-2008) - 10 speeches
+
+-   Zuma (2009-2017) - 10 speeches
+
+-   Ramaphosa (2018-2023) - 7 speeches
+
+-   Two outliers exist:
+
+    -   deKlerk (1994) - 1 speech
+
+    -   Motlanthe (2009) - 1 speech
 
 These records cumulatively formed the SONA dataset with 36 records and 5 variables, namely: *filename, speech, year, president* and *date of speech delivered*.
 
@@ -161,13 +190,13 @@ All data was read into R *version 4.3.1* , using R-Studio *version 2023.9.1.494*
 
 ## Data processing
 
-The pre-processed data was read into R and converted to a tibble object. The data was then assessed by looking at the head and tail of the tibble, in addition to looking at the data types of each column. Dates which appeared before a president's speech were removed using regular expressions. Trailing white spaces before and after a president's speech were also removed. I also noticed that former president- Motlanthe and deKlerk only had one record and so these observations were removed from the dataset.
+The pre-processed data was read into R and converted to a tibble. The data was then assessed by looking at the head and tail of the tibble, in addition to looking at the data types of each column. Dates which appeared before a president's speech were removed using regular expressions. Trailing white spaces before and after a speech were also removed. I also noticed that former president- Motlanthe and deKlerk only had one record and so these observations were removed from the dataset.
 
 As a result, the processed data had 34 rows and 5 columns.
 
 ## Tokenization
 
-The processed SONA dataset was then tokenized into sentences using unnest_tokens(), since the goal is to make predictions on sentence inputs. All text was then converted to lowercase to remove word redundancy, where each word is treated as its own unique feature, irrespective of letter case. I also removed all punctuation so that root-words are treated alike*.* I then included a sentence ID column to track sentence membership.
+The processed SONA dataset was then tokenized into sentences using unnest_tokens(), since the goal is to make predictions on sentence inputs. All text was then converted to lowercase to remove word redundancy. I also removed all punctuation so that root-words are treated alike*.* I then included a sentence ID column to track sentence membership.
 
 The sentence tokens were then tokenized into word and bigram tokens respectively, where all stop words were removed. I also ensured that "blank" tokens were removed. For the tokenization by bigram implementation, bigrams were first split into individual words, where each word was assessed for stop words. If a stop word was detected, the entire bigram was removed, while the remaining bigrams were unified.
 
@@ -181,32 +210,31 @@ I looked at the 20 most frequently used- words and bigrams: *(1)* for all presid
 
 The Bag-of-Words (BoW) model computes the frequency of occurrence of an unordered collection of words within a document and uses these frequencies as features to train the classifier.
 
-A word bag was generated by taking the word tokens and grouping the unique combinations of "sentence ID, president and word" and computing each grouping's frequency, after which the top 200 words for each grouping was selected to create the final word bag. The choice of the top 200 words was chosen due to its superior model performance relative to the top 100 and 500 word models (tested informally). The word bag consisted of 363 rows (words) and 3 columns, namely, *sentence ID, president, and word.*
+A word bag was generated by taking the word tokens and grouping the unique combinations of "sentence ID, president and word" and computing each grouping's frequency, after which the top 200 words for each grouping was selected to create the final word bag. The choice of the top 200 words was chosen due to its superior model performance relative to the top 100- and 500 word models (tested informally). The word bag consisted of 363 rows (words) and 3 columns, namely, *sentence ID, president, and word.*
 
-The BoW table was then constructed by identifying all the words in a sentence that overlap with the word bag. The frequency of each word within a sentence was then calculated. Finally, the BoW table was reformatted to a wide format (tidy format), where columns represent the features (149 words), the rows represent the observations (sentence ID) and the cell values are the frequency of a word within a sentence. All words not found in a sentence obtained a value of 0.
+The BoW table was then constructed by identifying all the words in a sentence that overlap with the word bag. The frequency of each word within a sentence was then calculated. Finally, the BoW table was reformatted to a tidy format, where columns represent the features (149 words), the rows represent the observations (sentence ID) and the cell values are the frequency of a word within a sentence. All words not found in a sentence obtained a value of 0.
 
 ### Term Frequency-Inverse Document Frequency Model
 
-Term Frequency -- Inverse Document Frequency (TF-IDF) refers to the metric that describes how important a word is in a document relative to other documents in the corpus. TF-IDF is calculated by multiplying the Term Frequency (TF) by the Inverse Document Frequency (IDF), where TF is the frequency of a word within a document divided by the total number of words in that document, whereas IDF is the proportion of documents in the corpus that contain the word.
-
-Bind_tf_idf() was used to calculate the TF-IDF for each word in each sentence. It is important to note that the "document" here refers to the sentence ID. The BoW table previously discussed was then manipulated to include the TF-IDF value instead of the word frequency.
+Term Frequency -- Inverse Document Frequency (TF-IDF) refers to the metric that describes how important a word is in a document relative to other documents in the corpus. TF-IDF is calculated by multiplying the Term Frequency (TF) by the Inverse Document Frequency (IDF), where TF is the frequency of a word within a document divided by the total number of words in that document, whereas IDF is the logarithmically scaled inverse fraction of the documents that contain the word. Bind_tf_idf() was used to calculate the TF-IDF for each word in each sentence. It is important to note that the "document" here refers to the sentence ID. The BoW table previously discussed was then manipulated to include TF-IDF values instead of word frequencies.
 
 ## Class Imbalance and Up-Sampling
 
-I checked for class imbalance by comparing the frequency of records in each of the target variable classes, namely: *Mandela, Mbeki, Zuma* and *Ramaphosa*. I found that the classes were imbalanced, where Mbeki had the largest proportion of sentences (92), followed by Ramaphosa (51), Zuma (41) and Mandela (21). As a result, I used upSample() in the Caret package to oversample the minority classes so that the number of observations in each class matched that of the majority class.
+I checked for class imbalance by comparing the frequency of records in each of the target variable classes, namely: *Mandela, Mbeki, Zuma* and *Ramaphosa*. I found that the classes were imbalanced, where Mbeki had the largest proportion of sentences (92), followed by Ramaphosa (51), Zuma (41) and Mandela (21). As a result, I used upSample() in the Caret package to oversample the minority classes so that the number of observations in each class matched the majority class.
 
 ## Split Balanced Data into Training, Validation and Test sets
 
-I partitioned the data into 70% training and 30% test sets using createDataPartition(), which performs stratified sampling, ensuring balanced classes in each split. The target variable, *president* was then converted to factors, where classes: *Mandela, Mbeki, Ramaphosa* and *Zuma* were categorized as levels 1 to 4, respectively. For the validation set, 5-fold cross-validation was applied during training to determine the optimal model parameters by means of a grid-search (discussed below).
+I partitioned the data into 70% training and 30% test sets using createDataPartition(), which performs stratified sampling. The target variable, *president* was then converted to factors, where classes: *Mandela, Mbeki, Ramaphosa* and *Zuma* were categorized as levels 1 to 4, respectively. For the validation set, 5-fold cross-validation was applied during training to determine the optimal model parameters by means of a grid-search (discussed below).
 
 ## Workflow
 
-Each classification model implemented both the BoW and TF-IDF features discussed above. For each model, a grid search was performed to find the optimal hyperparameters, generating sub-models as a result. For each sub-model, 5-fold cross-validation was performed on the training set. The best sub-model was determined by the model performance on both the training and validation sets. The hyperparameters of the best sub-model was then used to re-train the model on the full training set, after which predictions were made on the test set. The final models were compared based on their test set performance. **Figure 1** below shows the general workflow.
+Each classification model implemented both the BoW and TF-IDF features discussed above. For each model, a grid search was performed to find the optimal hyperparameters, generating sub-models as a result. For each sub-model, 5-fold cross-validation was performed on the training set. The best sub-model was determined by the model performance on both the training and validation sets. The hyperparameters of the best sub-model was then used to re-train the model on the full training set, after which predictions were made on the test set. The final models were compared based on their test set performance. @fig-1 below shows the general workflow.
 
 
 ```{mermaid}
 %%| echo: false 
-%%| fig-cap: "__Figure 1:__ Flow-chart showing the work-flow for model construction, hyperparameter tuning and model selection and testing after splitting the data into 70% training and 30% test sets."
+%%| fig-cap: "Flow-chart showing the work-flow for model construction, hyperparameter tuning and model selection and testing after splitting the data into 70% training and 30% test sets."
+%%| label: fig-1
 flowchart TB
   A>1. Select Features] --> B[a. Bag-of-Words]
   A --> D>2. Select Training Model]
@@ -219,77 +247,74 @@ flowchart TB
   D --> I[e. Feed Forward Neural Network]
   J --> K>4. Choose best sub-model based on train and validation performance]
   K --> L>5. Rebuild model using the optimal hyperparameters on the full training set]
-  L --> M>6. Predictions on test set]
+  L --> M>6. Predictions on test set and compare test set model performance]
   
 ```
 
 
 ::: callout-note
-In **Figure 1** above, the ribbons are the steps in the process and the rectangles are the choices made at that step.
+In **Figure 1** above, the ribbons are the steps in the process and the rectangles are the choices made at each step.
 :::
 
 ## Model Construction
 
 ### Classification Tree
 
-Classification trees are decision trees that recursively partition the input space and assign a class label to each partitioned region based on the majority class of the training samples in that region. A grid search was performed using the rpart() function with the following parameters:
+Classification trees recursively partition the input space and assigns a class label to each partitioned region based on the majority observation classes in that region. A grid search was performed using the rpart() function with the following parameters:
 
--   The complexity parameter, a stopping criterion where tree splitting terminates once the reduction in relative error is less than a specified *cp-threshold.*
+-   The complexity parameter, a stopping criterion where tree splitting terminates once the reduction in relative error is less than a specified *cp-threshold :*
 
     **cp** = {0.001, 0.112, 0.223, 0.334, 0.445, 0.556, 0.667, 0.778, 0.889, 1.000}
 
--   The minimum number of observations at any terminal node.
+-   The minimum number of observations at any terminal node:
 
     **minbucket** = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
--   The minimum number of observations that must exist in a node for a split to be attempted.
+-   The minimum number of observations that must exist in a node for a split to be attempted:
 
     **minsplit** = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
 ### Random Forest
 
-The Random Forest algorithm uses bagging to train multiple decision trees in parallel, reaching a majority vote of class classification. This type of ensemble learning helps to overcome overfitting.
+Random Forests use bagging to train multiple decision trees in parallel, reaching a majority vote of class classification. This type of ensemble learning helps to overcome overfitting.
 
 The randomForest() function was used, taking in the following parameters:
 
--    The number of trees to grow.
+-   The number of trees to grow:
 
     **ntree** = {100, 500, 1000}
 
--   Feature importance.
+-   Feature importance:
 
     **Importance** = TRUE
 
--    **na.action** = na.exclude
+-   **na.action** = na.exclude
 
 ### Extreme Gradient Boosting
 
 Extreme Gradient Boosting (XGBoost) models aggregate the output of a sequential ensemble of tree models, where each subsequent model improves on the previous model. The xgboost() function was used, with the following *important* parameters:
 
--   The maximum depth of the tree, where increasing this value results in a more complex model that is likely to overfit.
+-   The maximum depth of the tree, where increasing this value results in a more complex model:
 
     **max depth** = {1, 2, 3, 4, 5, 6}
 
--   The step size shrinkage, which is used to prevent overfitting. This value of *eta* shrinks the feature weights to make the boosting process more conservative.
+-   The step size shrinkage, which is used to prevent overfitting. This value of *eta* shrinks the feature weights to make the boosting process more conservative:
 
     **eta** = {0.2, 0.4, 0.6, 1}
 
--   The minimum loss reduction, where the larger the value of *gamma* is, the more conservative the algorithm is.
+-   The minimum loss reduction, where the larger the value of *gamma* is, the more conservative the algorithm is:
 
     **gamma** = {0.5, 1}
 
--   The L2 regularization term on the weights, where the default lambda value of 1 was chosen.
+-   The L2 regularization term on the weights:
 
     **lambda** = 1
 
-
-```{=html}
-<!-- -->
-```
-
--   **objective** = \"multi:softmax\" objective function for multi-class classification.
+-   Objective function for multi-class classification:
 
-It is important to note, that the labels of the input data was converted to factors then to integers and finally offset by -1 because xgboost() takes in numeric data where classes of the target variable should be indexed from 0. The features need to be converted to a DMatrix object using the xgb.DMatrix() function. Consequently, I had to offset the predictions by +1 when computing the confusion matrix, since R indexes from 1. I then had to convert the numeric predictions back to factors, where:
+    **objective** = "multi:softmax"
+
+It is important to note, that the labels of the input data were converted to factors then to integers and finally offset by -1 because xgboost() takes in numeric data where classes of the target variable should be indexed from 0. The features need to be converted to a DMatrix object using the xgb.DMatrix() function. Consequently, I offset the predictions by +1 when computing the confusion matrix, since R indexes from 1. I then had to convert the numeric predictions back to factors, where:
 
 -   0+1: Mandela
 
@@ -299,15 +324,15 @@ It is important to note, that the labels of the input data was converted to fact
 
 -   3+1: Zuma
 
-### Naïve Bayes 
+### Naïve Bayes
 
-Naïve Bayes is a generative model that seeks to model the distribution of inputs of a given class or category. The naiveBayes() function was used, while applying Laplace smoothing to handle zero probabilities in categorical data. Laplace values of 0, 0.1 and 1 were investigated.
+Naïve Bayes is a generative model that seeks to model the distribution of inputs of a given class. The naiveBayes() function was used, while applying Laplace smoothing to handle zero probabilities in categorical data. Laplace values of **0, 0.1 and 1** were investigated.
 
 ### Feed Forward Neural Network
 
 A feed-forward neural network is a type of artificial neural network where the connections between nodes do not form a cycle. Information in this network moves only in one direction, forward, from the input layer through the hidden layers, to the output layer.
 
-The Keras package in conjunction with Tensorflow was used to construct the feed forward neural network in a Python virtual environment within R-studio, by using the Anaconda software to create the virtual environment. The target variable (*president*) was extracted from the training data, and converted to factors, after which the factors were converted to discrete integers from 0 to 3, where:
+A feed-forward neural network was built using Keras and TensorFlow within a Conda environment managed by Anaconda, all executed in RStudio. The target variable (*president*) was extracted from the training data, and converted to factors, after which the factors were converted to discrete integers from 0 to 3, where:
 
 -   0: Mandela
 
@@ -315,14 +340,9 @@ The Keras package in conjunction with Tensorflow was used to construct the feed 
 
 -   2: Ramaphosa
 
-
-```{=html}
-<!-- -->
-```
-
 -   3: Zuma.
 
-Subsequently, the target variable *president* was one hot-coded to a binary representation. The features were then extracted and converted to a matrix format. Subsequently, a grid search was performed, whereby 5-fold cross validation was applied to each sub-model with the following hyperparameters:
+Subsequently, the target variable *president* was one hot-coded to a binary representation. The features were then extracted and converted to a matrix format. The following hyperparameters were used:
 
 -     **Input neurons =** {50, 100, 200}
 
@@ -332,45 +352,45 @@ Subsequently, the target variable *president* was one hot-coded to a binary repr
 
 The network was built as follows:
 
--   **Layer 1:** a dense fully connect layer with *x* input neurons specified above, and which uses either a hyperbolic tangent (Tanh) or ReLU activation function. This layer expects 149 predictor variables (words).
+-   **Layer 1:** a dense, fully connect layer with *x* input neurons specified above, and which uses either a Tanh or ReLU activation function. This layer expects 149 predictor variables (words).
 
--    **Layer 2:** a dropout layer to prevent overfitting by randomly selecting a fraction (specified by the drop-out rate above) of the input units at each update and setting them to 0 during training time.
+-   **Layer 2:** a dropout layer to prevent overfitting by randomly selecting a fraction (drop-out rate above) of the input units at each update and setting them to 0 during training time.
 
--   **Layer 3:** a dense fully connected layer with 4 output neurons (representing the 4 president classes). A softmax activation function was used to generate a vector of probabilities of class membership for each observation.
+-   **Layer 3:** a dense, fully connected layer with 4 output neurons (representing the 4 president classes). A softmax activation function was used to generate a vector of probabilities of class membership for each observation.
 
-The categorical cross-entropy loss function was minimized which is invariant to shifting of the predicted probabilities. The n-Adam optimizer was used to update the model parameters (weights and biases) and to minimize the loss function. This choice of optimizer was based on its superior performance compared to other optimizers, such as SGD, RMSprop, and Adam (informally tested). Finally, the data was trained for 30 epochs, with a batch size of 5, while shuffling the training data at each epoch.
+The categorical cross-entropy loss function was minimized which is invariant to shifting of the predicted probabilities. The n-Adam optimizer was used to update the model parameters (weights and biases). This choice of optimizer was based on its superior performance compared to other optimizers, such as SGD, RMSprop, and Adam (informally tested). Finally, the data was trained for 30 epochs, with a batch size of 5, while shuffling the training data at each epoch.
 
 ## Model Performance
 
-For all models, performance on the training, validation and full training and test sets were determined by the metrics discussed below. For 5-fold cross-validation, the best sub-model was determined which had the best validation and training macro-average F1-score. The final model was chosen based on the model with the best test set macro-average F1-score. Other metrics were also considered (see below).
+For all models, performance on the training, validation and test sets were determined by the metrics discussed below. For 5-fold cross-validation, the best sub-model was determined which had the best mean cross-validation (CV) and training macro-average F1-score. The final model was chosen based on the model with the best test set macro-average F1-score. Other metrics were also considered (see below).
 
-When training a model with 5-fold cross-validation, each metric is computed at each fold for the training and validation set. At each fold, the metric is computed for every class, and the macro-average metric is obtained by averaging these class-specific metrics (**Equation 1**). After training is complete, the final metric is computed as the average of the macro-average metrics over all folds (**Equation 2**). The macro-average metric was calculated when evaluating model performance on the test set.
+At each fold, the metric is computed for every class, and the macro-average metric is obtained by averaging these class-specific metrics (**Equation 1**). After training is complete, the final metric is computed as the average of the macro-average metrics over all folds (**Equation 2**).
 
 $$
 \text{MacroAverageMetric}_{\text{j}} = \frac{1}{n} \sum_{i=1}^{n} \text{metric}_{i,\text{j}}
 $$
 
-*...equation 1*, where metric~i, j~ is the metric for class i at a specific fold j , and n is the total number of classes. We see that j = {1, 2, 3, 4, 5}, n = 4 and i = {1, 2, 3, 4}.
+*...equation 1*, where metric~i, j~ is the metric for class i at a specific fold j , and n is the total number of classes. We see that j = \[1,5\], n = 4 and i \[1,4\].
 
 $$
 \text{FinalMetric} = \frac{1}{k} \sum_{j=1}^{k} \text{MacroAverageMetric}_{j}
 $$
 
-*...equation 2*, where MacroAverageMetric~j~ is the macro-average metric at fold j, and k is the total number of folds. We see that k = 5 and j = {1, 2, 3, 4, 5}.
+*...equation 2*, where MacroAverageMetric~j~ is the macro-average metric at fold j, and k is the total number of folds. We see that k = 5 and j = \[1, 5\].
 
 ### Accuracy
 
-This is the proportion of correct classifications among the total number of classifications. Accuracy is calculated by taking the sum of the diagonal of the confusion matrix.
+The proportion of correct classifications among the total number of classifications.
 
 $$
 \text{Accuracy} = \frac{(\text{TP} + \text{TN})}{(\text{TP} + \text{TN} + \text{FP} + \text{FN})}
 $$
 
-*...equation 3,* where TP, TN, FP and FN are the number of true positives, true negatives, false positives, and false negatives, respectively, found in the confusion matrix.
+*...equation 3,* where TP, TN, FP and FN are the number of true positives, true negatives, false positives, and false negatives, respectively.
 
 ### Recall
 
-Also known as the sensitivity or true positive rate, this is the proportion of actual positives that are correctly classified.
+Also known as the sensitivity, this is the proportion of actual positives that are correctly classified.
 
 $$
 \text{Recall} = \frac{\text{TP}}{(\text{TP} + \text{FN})}
@@ -386,25 +406,27 @@ $$*...equation 5*
 
 ### F1-score
 
-I chose the F1-score as my main criteria for model performance because the F1-score provides information on the model's ability to capture positive cases (recall) and be accurate with the cases it does capture (precision).
+I chose the F1-score as my main criterion for model performance because the F1-score provides information on the model's ability to capture positive cases (recall) and be accurate with the cases it does capture (precision).
 
 $$
 F1 = 2 \frac{(\text{Precision} \times \text{Recall})}{(\text{Precision} + \text{Recall})}
 $$*...equation 6*
 
-# Results & Discussion
+# Results
 
 ## Exploratory Data Analysis
 
 ### Top 20 most frequently used words and bigrams
 
-**Figure 2** below shows **(a)** the top 20 most frequently used words and **(b)** the top 20 most frequently used bigrams among all presidents. The bigrams provide more context relative to the unigrams, and we see that most president's agenda is about the economy with bigrams such as "economic growth", "job creation" and "economic empowerment". **Figure 3** below shows the top 20 most frequently used words- and **Figure 4** below shows the top 20 most frequently used bigrams- for each president. In these figures we see that the agenda is specific to a president or period of presidency, where Mandela has bigrams such as "people-centered society" alluding to the end of Apartheid, Mbeki focuses on social justice with bigrams such as "social security" and "social partners", Zuma mentions the "world cup" which alludes to the 2010 soccer world cup hosted in South Africa and Ramaphosa's focus is on crime prevention with bigrams such as "gender-based violence" and "law enforcement".
+In @fig-2 below we see the top 20 most frequently used- **(a)** words and **(b)** bigrams, among all presidents. The bigrams provide more context relative to the unigrams, and we see that most president's agenda is about the economy with bigrams such as "economic growth" and "job creation". @fig-3 below shows the top 20 most frequently used words- and @fig-4 below shows the top 20 most frequently used bigrams- for each president. In these figures we see that the agenda is specific to a president or period of presidency, where Mandela has bigrams such as "people-centered society" alluding to the end of Apartheid, Mbeki focuses on social justice with bigrams such as "social security" and "social partners", Zuma mentions the "world cup" which alludes to the 2010 soccer world cup hosted in South Africa and Ramaphosa's focus is on crime prevention with bigrams such as "gender-based violence" and "law enforcement".
 
 
-```{r tokenization, eda1, eval=T, fig.show=T, fig.cap= "Figure 2: Bar plots showing the 20 most frequently used (a) words and (b) bigrams used by all presidents"}
+```{r tokenization, eval=T, fig.show=T, fig.cap= "Bar plots showing the 20 most frequently used (a) words and (b) bigrams used by all presidents"}
+#| label: fig-2
 
-###############################Tokenize by sentence#############################
+###########Tokenize by sentence##########
 
+#TOKENIZE BY SENTENCE
 sona_tokenized_by_sentence = unnest_tokens(sona, sentence, speech,
   token = 'sentences',
   to_lower = T) %>% #convert text to lowercase
@@ -418,16 +440,17 @@ sona_tokenized_by_sentence = sona_tokenized_by_sentence %>%
 sona_tokenized_by_sentence = sona_tokenized_by_sentence %>%
   mutate(sentence_id = 1:nrow(sona_tokenized_by_sentence))
 
-###############################Tokenize by word#################################
+###########Tokenize by word###############
 
+#TOKENIZE BY WORD
 sona_tokenized_by_word = unnest_tokens(sona_tokenized_by_sentence, word, sentence,
   token = 'words',
   to_lower = T)%>%  #ensure text is in lowercase
   select(word, everything())  %>%
-  #remove stop words and empty tokens
-  filter(!word %in% stop_words$word, str_detect(word, '[A-Za-z]'))
+  filter(!word %in% stop_words$word, #remove stop words
+         str_detect(word, '[A-Za-z]')) #remove empty tokens
 
-#Bar plot of top 20 words for all president_labels for all years
+#Bar plot of top 20 words for all president
 plot_twenty_words_all_presidents = sona_tokenized_by_word%>%
   count(word, sort = TRUE) %>%
   filter(rank(desc(n)) <= 20) %>%
@@ -436,8 +459,9 @@ plot_twenty_words_all_presidents = sona_tokenized_by_word%>%
   guides(fill= "none") + labs(x = "word", y = "Frequency")+
   ggtitle("A. Frequent words")
 
-###############################Tokenize by bigram###############################
+###############Tokenize by bigram#########
 
+#TOKENIZE BY BIGRAM
 sona_tokenized_by_bigram = unnest_tokens(sona_tokenized_by_sentence, bigram, sentence,
   token = 'ngrams', n=2,
   to_lower = T) %>% #ensure text is in lowercase
@@ -476,7 +500,8 @@ grid.arrange(plot_twenty_words_all_presidents,
 <br>
 
 
-```{r eda1, eval=T, fig.show=T, fig.cap="Figure 3: Bar plots showing the 20 most frequently used words by each president. "}
+```{r eda1, eval=T, fig.show=T, fig.cap="Bar plots showing the 20 most frequently used words by each president. "}
+#| label: fig-3
 
 #Mandela most commonly used words
 plot_twenty_words_mandela = sona_tokenized_by_word %>%
@@ -543,7 +568,8 @@ grid.arrange(plot_twenty_words_mandela,
 <br>
 
 
-```{r eda2, eval=T, fig.show=T, fig.cap="Figure 4: Bar plots showing the 20 most frequently used bigrams by each president. "}
+```{r eda2, eval=T, fig.show=T, fig.cap="Bar plots showing the 20 most frequently used bigrams by each president. "}
+#| label: fig-4
 
 #Mandela most commonly used bigrams
 plot_twenty_bigrams_mandela = sona_tokenized_by_bigram %>%
@@ -612,18 +638,18 @@ grid.arrange(plot_twenty_bigrams_mandela,
 
 ### Average speech and Sentence Length
 
-**Figure 5** below shows the **(a)** average speech length per president and **(b)** the average sentence length per president. In **Figure 5 (a)** we see that Ramaphosa has a relatively long average speech length, in other words the average number of sentences within a speech is quite long for Ramaphosa (327), followed by Zuma (266), Mbeki (242) and Mandela (238). In **Figure 5 (b)** we see that Mbeki (30) has the largest average sentence length (average number of words per sentence), followed by Mandela (25) , Ramaphosa (22) and Zuma (19).
+@fig-5 below shows the **(a)** average speech length per president and **(b)** the average sentence length per president. In @fig-5 **(a)** we see that Ramaphosa has a relatively long average speech length (327 sentences per speech), followed by Zuma (266), Mbeki (242) and Mandela (238). In @fig-5 **(b)** we see that Mbeki has the largest average sentence length (30 words per sentence), followed by Mandela (25) , Ramaphosa (22) and Zuma (19).
 
 
 ```{r eda3, eval=T, include=F}
 
-#Calculate the cumulative frequency of sentences for each president_label
+#Calculate the cumulative frequency of sentences for each president
 total_sentences <- sona_tokenized_by_sentence %>%
   group_by(president_label) %>%
   summarise(total = n())
 
 
-#Calculate number of speeches for each president_label
+#Calculate number of speeches for each president
 total_files <- sona_tokenized_by_sentence %>%
   select(president_label, filename) %>%
   group_by(filename)%>%
@@ -632,7 +658,7 @@ total_files <- sona_tokenized_by_sentence %>%
   summarise(num_files = n())
 
 
-#Average number of sentences per speech for each president_label
+#Average number of sentences per speech for each president
 mean_num_sentences = total_sentences %>%
   left_join(total_files, by = "president_label") %>%
   mutate(mean_sentences = total / num_files)
@@ -651,7 +677,8 @@ y = mean_sentences, fill = president_label)) +
 
 ```
 
-```{r eda4, eval=T, fig.show=T, fig.cap="Figure 5: Bar plots showing (a) the average number of sentences per speech and (b) the average number of words per sentence for each president."}
+```{r eda4, eval=T, fig.show=T, fig.cap="Bar plots showing (a) the average number of sentences per speech and (b) the average number of words per sentence for each president."}
+#| label: fig-5
 
 #plot average number of words per sentence for each president_label
 plot_average_num_words_per_president = sona_tokenized_by_sentence %>% group_by(filename, president_label)%>%
@@ -675,6 +702,7 @@ grid.arrange(plot_average_num_sentences_per_president,
 ```
 
 ```{r bow, eval=T, include=F}
+
 #prepare dataframe for all BEST model results
 all_results = data.frame(model_ID = character(), parameters= character(),
            test_accuracy = double(),
@@ -698,9 +726,9 @@ ncol(word_bag)
 #find the most frequently used words by each president
 sona_tdf = sona_tokenized_by_word %>% inner_join(word_bag) %>%
   group_by(sentence_id,president_label, word) %>%
-  count() %>% #frequency of most frequently used words 
+  count() %>% #frequency of words 
   group_by(president_label) %>%
-  mutate(total = sum(n)) %>% #get per president_label frequency
+  mutate(total = sum(n)) %>% #get per president frequency
   ungroup()
 
 
@@ -725,8 +753,7 @@ table(bag_of_words$president_label)
 
 #up-sample
 set.seed(123)
-bag_of_words = upSample(x = bag_of_words[, colnames(bag_of_words) != "president_label"],  # all predictor variables
-                      y = as.factor(bag_of_words$president_label),  # target variable
+bag_of_words = upSample(x = bag_of_words[, colnames(bag_of_words) != "president_label"], y = as.factor(bag_of_words$president_label),
                       yname = "president_label")
 
 #check for class balance after up-sampling
@@ -760,7 +787,7 @@ str(df_test)
 df_train$president_label = as.factor(df_train$president_label) #train
 df_test$president_label = as.factor(df_test$president_label) #test
 
-#exclude filename for training models
+#exclude sentence id for training models
 df_train = subset(df_train, select=-sentence_id)
 df_test = subset(df_test, select=-sentence_id)
 
@@ -771,16 +798,14 @@ df_test = subset(df_test, select=-sentence_id)
 
 ### Classification Trees
 
-In **Table 1** below, we see the results of the best performing classification trees for the BoW features, arranged in descending order of training and mean cross-validation (CV) F1-score.
+In @tbl-1 below, we see the results of the best performing classification trees for the BoW features.
 
-We see that sub-model 1 and 2 both have the best mean CV F1-score of 0.5462 and a training F1-score of 0.7490. In parallel, we see that that their mean CV and training- accuracy, recall and precision are also the best among all other sub-models. Notably, the training performance is better than the validation performance, where we see very good train accuracy (0.7510) but a small validation accuracy of 0.5652, suggestive of model overfitting. Model 1 parameters were chosen to re-train the model on the full training set.
-
-As a result, we see two interesting clusters in the tree diagram in **Figure i** of **Addendum A**, where Ramaphosa (2018-present) is more likely to talk about health, which is in accordance with the Covid-19 pandemic. In addition, Mandela (1994-1999) is more likely to talk about peace, which is in accordance with the end of the Apartheid era (1994).
+We see that model 1 and 2 both have the best mean CV F1-score of 0.546 and a training F1-score of 0.749. These models also have the best mean CV accuracy of 0.565 and a training accuracy of 0.751. These models perform better than the other models with regards to the other metrics as well. Model 1 parameters were chosen to re-train the model on the full training set. The results of training can be seen in the BoW tree diagram in @fig-6 .
 
 
 ```{r bowClassTree, eval=T, include=F}
 
-# Define the parameters for grid search
+#parameters for grid search
 cp_grid <- seq(0.001, 1, length=10)
 minbucket_grid <- seq(1, 10, 1)
 minsplit_grid <- seq(1, 10, 1)
@@ -840,7 +865,7 @@ for (cp_val in cp_grid) {
                           control = rpart.control(minsplit = minspl,
                                                   minbucket = minbuck,
                                                   cp = cp_val),
-                          method="class") #classification task
+                          method="class") 
 
       ###########################################
 
@@ -857,17 +882,17 @@ for (cp_val in cp_grid) {
         train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
         train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
 
-        # Compute the average train accuracy
+        # Compute the average train accuracy at current fold
         train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
 
-        # Compute the average train recall
+        # Compute the average train recall at current fold
         train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
 
 
-        # Compute the average train positive predictive value or "precision"
+        # Compute the average train positive predictive value or "precision" at current fold
         train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
 
-        # Compute the average train F1-score
+        # Compute the average train F1-score at current fold
         train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
 
         ###########################################
@@ -885,16 +910,16 @@ for (cp_val in cp_grid) {
         valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
         valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
 
-        # Compute the average validation accuracy
+        # Compute the average validation accuracy at current fold
         valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
 
-        # Compute the average validation recall
+        # Compute the average validation recall at current fold
         valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
 
-        # Compute the average validation positive predictive value or "precision"
+        # Compute the average validation positive predictive value or "precision" at current fold
         valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
 
-        # Compute the average validation F1-score
+        # Compute the average validation F1-score at current fold
         valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
 
       }
@@ -909,9 +934,8 @@ for (cp_val in cp_grid) {
       ##recall
       mean_train_recall <- mean(train_recall_values) #train
       mean_valid_recall <- mean(valid_recall_values) #validation
-      
 
-      ##Positive predictive value
+      ##Positive predictive value or precision
       mean_train_ppv <- mean(train_ppv_values) #train
       mean_valid_ppv <- mean(valid_ppv_values) #validation
       
@@ -956,6 +980,7 @@ best_results = results %>% filter(train_f1 > 0.5 & valid_f1> 0.5) %>% select(cp,
 ################################################################################
 
 # Fit the best tree model to the original training data
+# Use optimal hyperparameters
 set.seed(123)
 bow_tree_fit <- rpart(president_label ~ . , df_train,
                              control = rpart.control(minsplit =1,
@@ -974,7 +999,7 @@ tree_plot = prp(bow_tree_fit, cex=0.4, type=0,col="darkgreen",
 
 #predictions on test data
 set.seed(123)
-fittedtest <- predict(tree_fit, df_test, type = 'class')
+fittedtest <- predict(bow_tree_fit, df_test, type = 'class')
 
 #test set confusion matrix
 test_conf_mat <- confusionMatrix(data=fittedtest, #predicted
@@ -1001,25 +1026,31 @@ all_results[1, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
 all_results[1, "model_ID"] = rownames(best_results)[1]
 
 #parameters of best sub model
-#all_results[1, "parameters"] = rownames(best_results)[1]
+all_results[1, "parameters"] = paste(paste0(c("cp = ", "minbucket = ", "minsplit = "), unname(best_results[1, 1:3])), collapse=", ")
+
+
 
 ```
 
-```{r tblTree}
-
+```{r resultsTree1}
+#| label: tbl-1
+#| tbl-cap: Best Classification Trees, using bag-of-words features and sorted in descending order of training and validation F1-score
 #colnames
 colnames(best_results) = c("cp", "minbucket", "minsplit","Train F1-score", "Validation F1-score", "Train accuracy", "Validation accuracy", "Train recall", "Validation recall", "Train precision", "Validation precision")
 
   
 #print table
-kable(best_results[1:5,], caption="Table 1: Best Classification Trees, using bag-of-word features and sorted in descending order of training and validation F1-score.")
+kable(round(best_results[1:5,], 3), caption="")
+
 
 ```
 
 
-### Random Forests 
+<br>
 
-In **Table 2** below we see that the grid-search performed equally well for all *ntree* values. We see an improvement in the mean CV-F1 score (0.6476) relative to the BoW classification tree, however, the training F1-score deteriorated (0.6414). All other metrics are relatively good, with values above 0.6, suggesting good model fit. We also see that the training and validation metrics are similar, e.g., training accuracy of 0.6394 is similar to the mean CV accuracy of 0.65. I chose RF sub-model 2 with *ntrees* = 500 to re-train the full training set, which strikes a balance between too many and too few trees.
+### Random Forests
+
+In @tbl-2 we see that all models performed equally well. All metrics have values above 0.6, suggesting good model fit. The mean CV-F1 score = 0.648 and the training F1-score = 0.641. The training accuracy = 0.639 and mean CV accuracy = 0.65. I chose RF sub-model 2 with *ntrees* = 500 to re-train the full training set, which strikes a balance between too many and too few trees.
 
 
 ```{r bowRF, eval=T, include=F}
@@ -1031,7 +1062,7 @@ results <<- data.frame(ntree = integer(),
                       train_ppv = double(), valid_ppv = double(),
                       train_f1 = double(), valid_f1 = double())
 
-#grid search
+#grid parameters
 ntrees_grid = c(100, 500, 1000)
 
 #number of folds
@@ -1077,7 +1108,7 @@ for (ntree in ntrees_grid) {
     #fit the model at current fold
     set.seed(123)
     rf_fit <- randomForest(as.factor(president_label) ~ ., data=df_train_fold,
-                       ntree = 500,  #no improvement at ntree=200 or ntree= 500
+                       ntree = 500,  
                         importance = TRUE,
                        na.action=na.exclude,
                         do.trace = 25)
@@ -1097,16 +1128,16 @@ for (ntree in ntrees_grid) {
     train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
     train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
   
-    # Compute the average train accuracy
+    # Compute the average train accuracy at current fold
     train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
   
-    # Compute the average train recall
+    # Compute the average train recall at current fold
     train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
   
-    # Compute the average train positive predictive value or "precision"
+    # Compute the average train positive predictive value or "precision" at current fold
     train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
   
-    # Compute the average train F1-score
+    # Compute the average train F1-score at current fold
     train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
   
     ###########################################
@@ -1124,16 +1155,16 @@ for (ntree in ntrees_grid) {
     valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
     valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
   
-    # Compute the average validation accuracy
+    # Compute the average validation accuracy at current fold
     valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
   
-    # Compute the average validation  recall
+    # Compute the average validation  recall at current fold
     valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
   
-    # Compute the average validation positive predictive value or "precision"
+    # Compute the average validation positive predictive value or "precision" at current fold
     valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
   
-    # Compute average validation F1-score
+    # Compute average validation F1-score at current fold
     valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
   
   }
@@ -1149,7 +1180,7 @@ for (ntree in ntrees_grid) {
   mean_train_recall <- mean(train_recall_values) #train
   mean_valid_recall <- mean(valid_recall_values) #validation
   
-  ##average PPV
+  ##average PPV or precision
   mean_train_ppv <- mean(train_ppv_values) #train
   mean_valid_ppv <- mean(valid_ppv_values) #validation
   
@@ -1221,39 +1252,40 @@ all_results[2, "test_accuracy"] <- round(test_conf_mat$overall['Accuracy'], 3)
 all_results[2, "test_recall"] <- round(mean(test_conf_mat$byClass[,'Sensitivity']), 3)
 
 # Compute the test positive predictive value or "precision"
-# Compute the test positive predictive value or "precision"
 all_results[2, "test_precision"] <- round(mean(test_conf_mat$byClass[,'Pos Pred Value']), 3)
 
 # Compute the test F1-score
 all_results[2, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
 
 #model ID of best sub model
-#all_results[2, "model_ID"] = rownames(best_results)[1]
+all_results[2, "model_ID"] = rownames(results)[2]
 
 #parameters of best sub model
-#all_results[1, "parameters"] = rownames(best_results)[1]
+all_results[2, "parameters"] = paste0("ntree=",unname((results)[2, 1]))
 
 ```
 
-```{r tblRF}
-
+```{r resultsRF1}
+#| label: tbl-2
+#| tbl-cap: Best Random Forest models, using bag-of-words features and sorted in descending order of training and validation F1-score
 #colnames
 colnames(best_results) = c("ntree","Train F1-score", "Validation F1-score", "Train accuracy", "Validation accuracy", "Train recall", "Validation recall", "Train precision", "Validation precision")
 
   
 #print table
-kable(best_results, caption="Table 2: Best Random Forest models, using bag-of-word features and sorted in descending order of training and validation F1-score.")
+kable(round(best_results, 3), caption="")
+
 ```
 
 
 ### Extreme Gradient Boosting
 
-**Table 3** below suggests that sub-model 47 has the best model performance, and so the model was re-trained on the full training dataset using max depth = 6, eta = 1 and gamma = 0.5. We see that the training F1-score (0.6212) and training accuracy (0.6202) is relatively good, however the mean CV F1-score (0.4256) and mean CV accuracy (0.4384) is relatively low . We see a similar trend for all other metrics, where the training performance is good, but the validation performance is poor, suggestive of model overfitting.
+@tbl-3 below suggests that sub-model 47 had the best model performance, and so the model was re-trained on the full training dataset using max depth = 6, eta = 1 and gamma = 0.5. We see that the training F1-score (0.621) and training accuracy (0.62) is relatively good, however the mean CV F1-score (0.426) and mean CV accuracy (0.438) is relatively low . We see a similar trend for all other metrics, where the training performance is good, but the validation performance is poor, suggesting that the model overfits
 
 
 ```{r bowXGB, eval=T, include=F}
 
-#Grid search
+#Grid parameters
 max_depth_grid =c(1, 2, 3, 4, 5, 6) #up to default value = 6
 eta_grid = c(0.2, 0.4, 0.6, 1) #ranges from 0 to 1
 gamma_grid = c(0.5, 1)
@@ -1374,16 +1406,16 @@ for (md in max_depth_grid) {
         train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
         train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
 
-        # Compute the average train accuracy
+        # Compute the average train accuracy at current fold
         train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
 
-        # Compute the average train recall
+        # Compute the average train recall at current fold
         train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
 
-        # Compute the average train positive predictive value or "precision"
+        # Compute the average train positive predictive value or "precision" at current fold
         train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
 
-        # Compute the average train F1-score
+        # Compute the average train F1-score at current fold
         train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
 
 
@@ -1418,16 +1450,16 @@ for (md in max_depth_grid) {
         valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
         valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
 
-        # Compute the average validation accuracy
+        # Compute the average validation accuracy at current fold
         valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
 
-        # Compute the average validation recall
+        # Compute the average validation recall at current fold
         valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
 
-        # Compute the average validation positive predictive value or "precision"
+        # Compute the average validation positive predictive value or "precision" at current fold
         valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
 
-        # Compute average validation F1-score
+        # Compute average validation F1-score at current fold
         valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
 
       }
@@ -1560,39 +1592,40 @@ all_results[3, "test_accuracy"] <- round(test_conf_mat$overall['Accuracy'], 3)
 all_results[3, "test_recall"] <- round(mean(test_conf_mat$byClass[,'Sensitivity']), 3)
 
 # Compute the test positive predictive value or "precision"
-# Compute the test positive predictive value or "precision"
 all_results[3, "test_precision"] <- round(mean(test_conf_mat$byClass[,'Pos Pred Value']), 3)
 
 # Compute the test F1-score
 all_results[3, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
 
 #model ID of best sub model
-#all_results[3, "model_ID"] = rownames(best_results)[1]
+all_results[3, "model_ID"] = rownames(best_results)[1]
 
 #parameters of best sub model
-#all_results[3, "parameters"] = rownames(best_results)[1]
+all_results[3, "parameters"] = paste(paste0(c("maxdepth = ", "eta = ", "gamma = "), unname(best_results[1, 1:3])), collapse=", ")
 
 ```
 
-```{r tblXGB}
-
+```{r resultsXGB1}
+#| label: tbl-3
+#| tbl-cap: Best XGBoost models, using bag-of-words features and sorted in descending order of training and validation F1-score
 #colnames
-
 colnames(best_results) = c("maxdepth", "eta", "gamma","Train F1-score", "Validation F1-score", "Train accuracy", "Validation accuracy", "Train recall", "Validation recall", "Train precision", "Validation precision")
 
   
 #print table
-kable(best_results[1:5, ], caption="Table 3: Best XGBoost models, using bag-of-word features and sorted in descending order of training and validation F1-score.")
+kable(round(best_results[1:5, ], 3), caption="")
+
 
 ```
 
 
-### Naïve Bayes 
+### Naïve Bayes
 
-As seen in **Table 4** below, all "top" performing models displayed poor performance. These models all displayed the same metric values, with a training F1-score of 0.1058 and a mean CV F1-score of 0.1. The training accuracy of 0.25 and mean CV accuracy of 0.2528 also suggests poor model performance. I used the simplest model, model 1 with no Laplace smoothing to re-train the model on the full training dataset.
+As seen in @tbl-4 below, all "top" performing models displayed poor performance. These models all displayed the same metric values, with a training F1-score of 0.106 and a mean CV F1-score of 0.1. The training accuracy of 0.253 and mean CV accuracy of 0.25 also suggests poor model performance. I used the simplest model, model 1 with no Laplace smoothing to re-train the model on the full training dataset.
 
 
 ```{r bowNB, eval=T, include=F}
+
 #laplace values
 laplace_grid = seq(0, 1, 0.1)
 
@@ -1612,7 +1645,9 @@ results <<- data.frame(laplace = double(),
 
 
 ###########################################
+#GRIDSEARCH
 for (lap in laplace_grid) {
+  
   #empty vectors for results at each fold...
   train_accuracy_values <- numeric(num_folds)
   valid_accuracy_values <- numeric(num_folds)
@@ -1657,17 +1692,17 @@ for (lap in laplace_grid) {
     train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
     train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
 
-    # Compute the train accuracy
+    # Compute the train accuracy at current fold
     train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
 
-    # Compute the average train recall
+    # Compute the average train recall at current fold
     train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
 
 
-    # Compute the average train positive predictive value or "precision"
+    # Compute the average train positive predictive value or "precision" at current fold
     train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
 
-    # Compute the train F1-score
+    # Compute the train F1-score at current fold
     train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
 
 
@@ -1684,16 +1719,16 @@ for (lap in laplace_grid) {
     valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
     valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
 
-    # Compute the valid accuracy
+    # Compute the valid accuracy at current fold
     valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
 
-    # Compute the average valid recall
+    # Compute the average valid recall at current fold
     valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
 
-    # Compute the average valid positive predictive value or "precision"
+    # Compute the average valid positive predictive value or "precision" at current fold
     valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
 
-    # Compute the valid F1-score
+    # Compute the valid F1-score at current fold
     valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
 
     }
@@ -1760,22 +1795,23 @@ all_results[4, "test_accuracy"] <- round(test_conf_mat$overall['Accuracy'], 3)
 all_results[4, "test_recall"] <- round(mean(test_conf_mat$byClass[,'Sensitivity']), 3)
 
 # Compute the test positive predictive value or "precision"
-# Compute the test positive predictive value or "precision"
 all_results[4, "test_precision"] <- round(mean(test_conf_mat$byClass[,'Pos Pred Value']), 3)
 
 # Compute the test F1-score
 all_results[4, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
 
 #model ID of best sub model
-#all_results[4, "model_ID"] = rownames(best_results)[1]
+all_results[4, "model_ID"] = rownames(best_results)[1]
 
 #parameters of best sub model
-#all_results[4, "parameters"] = rownames(best_results)[1]
+all_results[4, "parameters"] = paste0("Laplace", unname(best_results[1, 1]))
+
 
 ```
 
-```{r tblNB}
-
+```{r resultsNB1}
+#| label: tbl-4
+#| tbl-cap: Best Naïve Bayesian models, using bag-of-words features and sorted in descending order of training and validation F1-score
 
 #colnames
 colnames(best_results) = c("Laplace", "Train accuracy", "Validation accuracy", "Train recall", "Validation recall", "Train precision", "Validation precision", "Train F1-score", "Validation F1-score") 
@@ -1785,25 +1821,28 @@ best_results = best_results %>% select(Laplace, `Train F1-score`, `Validation F1
 
 
 #print table
-kable(best_results[1:5,], caption="Table 4: Best Naïve Bayesian models, using bag-of-word features and sorted in descending order of training and validation F1-score.")
+kable(round(best_results[1:5,], 3), 
+      caption="")
+
+saveRDS(all_results, "data/test_performance.rds")
 
 ```
 
 
-### Feed Forward Neural Network 
+### Feed Forward Neural Network
 
-In **Table 5** below, we see the results of the feed forward neural network, where model 55 had the best training F1-score of 0.857 (as well as model 17) and the best mean CV F1-score of 0.593. We also see that model 55 had one of the best training accuracies (0.852) and the best validation accuracy (0.612). All other metrics for model 55 are also among the top performing models.
+In @tbl-5 below, we see the results of the feed forward neural network, where model 55 had the best training F1-score of 0.857 (as well as model 17) and the best mean CV F1-score of 0.593. We also see that model 55 had one of the best training accuracies (0.852) and the best mean CV accuracy (0.612). All other metrics for model 55 are also among the top performing models.
 
-**Figure ii** in **Addendum A** shows the change in the Log Loss, training- recall, precision and accuracy over all 30 epochs. We see that the log loss approaches 0, as the number of epochs increase, whereas the training- recall, precision and accuracy increases.
+@fig-7 in **Addendum A** shows the change in the Log Loss, training- recall, precision and accuracy over all 30 epochs.
 
 
 ```{r bowNN, eval=T, include=F}
 
 #read in saved results
-bowNNresults = readRDS("data/nn_model_bow_results.rds")
+bowNNresults <<- readRDS("data/nn_model_bow_results.rds")
 
 #UNCOMMENT CODE BELOW IF REQUIRED. 
-#SET UP VIRTUAL ENVIRONMENT!
+#SET UP CONDA ENVIRONMENT IN LIBRARIES CHUNK!
 #########################################################
 
 # # Set random seed
@@ -1811,11 +1850,11 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 # tensorflow::set_random_seed(104)
 
 
-# #grid search
+# # grid search
 # units_grid = c(50, 100, 200)
 # learning_rate_grid = c(0.001, 0.01, 0.1)
 # dropout_grid = c(0.01, 0.1)
-# 
+# activation_grid = c("tanh", "relu")
 # #empty data frame to store results for each combination of parameters above
 # results <<- data.frame(num_nodes = integer(), 
 #                       drop_out = double(), 
@@ -1846,23 +1885,17 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 # ################################################################################
 # 
 # #DEFINE NUMBER OF FOLDS
-# 
-# 
-# #Number of folds
-# num_folds <- 5 #5-fold cross-validation
+# num_folds <- 5 
 # 
 # #Split the data into k-folds
 # set.seed(104)
 # folds <- createFolds(df_train$president_label, k = num_folds)
-# 
-# #######
-# 
-# #CONSTRUCTING MODELS USING 5-FOLD CROSS-VALIDATION AND GRID-SEARCH
 #                       
-# #for each combination of parameters...
+# #GRID SEARCH
 # for (num_nodes in units_grid) {
 #   for (learning_rate in learning_rate_grid) {
 #     for (dropout in dropout_grid) {
+#        for (activ in activation_grid) {
 # 
 #       ###########################################
 # 
@@ -1877,7 +1910,7 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 #       valid_recall_values <- numeric(num_folds) #validation
 #       
 #       
-#       ##positive predictive value
+#       ##positive predictive value OR PRECISION
 #       train_ppv_values <- numeric(num_folds) #train
 #       valid_ppv_values <- numeric(num_folds) #validation
 #       
@@ -1915,7 +1948,7 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 #         
 #         ##define the model
 #         nn_model %>%
-#           layer_dense(units = num_nodes, activation = 'tanh', input_shape = c(149), #149 features
+#           layer_dense(units = num_nodes, activation = activ, input_shape = c(149), #149 features
 #                       kernel_regularizer = regularizer_l1(0.01)) %>%
 #           layer_dropout(rate = dropout) %>%
 #           layer_dense(units = 4, activation = 'softmax')
@@ -1966,7 +1999,7 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 #         train_f1_score <- 2 * (train_ppv * train_recall) / (train_ppv + train_recall)
 # 
 # 
-#         #append metric to vector containing all folds' metrics
+#         #STORE METRICS AT CURRENT FOLD
 #         ##train recall
 #         train_recall_values[fold] <-  train_recall 
 # 
@@ -2009,7 +2042,1576 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 #         valid_f1_score <- 2 * (valid_ppv * valid_recall) / (valid_ppv + valid_recall)
 # 
 # 
-#         #append metric to vector containing all folds' metrics
+#         #STORE METRICS AT CURRENT FOLD
+#         ##valid recall
+#         valid_recall_values[fold] <-  valid_recall 
+# 
+#         ##valid precision
+#         valid_ppv_values[fold] <-  valid_ppv
+#         
+#         ##valid accuracy
+#         valid_accuracy_values[fold] <-  valid_accuracy
+#         
+#         
+#         ##valid f1
+#         valid_f1_values[fold] <-  valid_f1_score
+# 
+#       } #end of current fold
+#       
+#       ###########################################
+# 
+#       # MEAN METRICS FOR ALL FOLDS
+#       ##Accuracy
+#       mean_train_accuracy <- mean(train_accuracy_values) #train
+#       mean_valid_accuracy <- mean(valid_accuracy_values) #validation
+# 
+#       ##recall
+#       mean_train_recall <- mean(train_recall_values) #train
+#       mean_valid_recall <- mean(valid_recall_values) #validation
+# 
+# 
+#       ##Positive predictive value
+#       mean_train_ppv <- round(mean(train_ppv_values), 3) #train
+#       mean_valid_ppv <- round(mean(valid_ppv_values), 3) #validation
+#       
+#       ##F1-score
+#       mean_train_f1 <- round(mean(train_f1_values), 3) #train
+#       mean_valid_f1 <- round(mean(valid_f1_values), 3) #validation
+#       
+# 
+#       ###########################################
+# 
+#       # Store the results
+#       results <- rbind(results, data.frame(num_nodes = c(num_nodes), 
+#                                            drop_out = c(dropout), 
+#                                            activation_function = activ,
+#                                            learning_rate = learning_rate,
+#                                            L1_regularization = 0.01,
+#                                            
+#                                            train_accuracy = mean_train_accuracy,
+#                                            valid_accuracy = mean_valid_accuracy,
+#                                            
+#                                            train_ppv = mean_train_ppv,
+#                                            valid_ppv = mean_valid_ppv,
+#                                            
+#                                            train_recall = mean_train_recall,
+#                                            valid_recall = mean_valid_recall,
+#                                            
+#                                            train_f1 = mean_train_f1, 
+#                                            valid_f1 = mean_valid_f1))
+#       }
+#     }
+#   }
+# }
+#       
+# 
+# #save results
+# save.image("data/bow_neural_networks.RData")
+
+# ####################################################################
+# 
+# #rename models
+# rownames(results) = paste0("BoW NN model ", 1:nrow(results))
+# 
+# #check for optimal model with best train and validation f1-scores
+# best_results_bow_nn = results %>% filter(train_f1 > 0.8 & valid_f1> 0.6) %>% select(num_nodes,
+#                                            drop_out, 
+#                                            activation_function,
+#                                            learning_rate,
+#                                            L1_regularization,
+#                                                               drop_out,
+#                                                               activation_function,
+#                                                               learning_rate,
+#                                                               L1_regularization,
+#                                                         train_f1, valid_f1)%>%
+#                                                         arrange(desc(train_f1),
+#                                                                 desc(valid_f1))  
+# 
+# 
+# ####################################################################
+# #rebuild model on entire training set
+
+##Set random seed
+# set.seed(104)
+# tensorflow::set_random_seed(104)
+# 
+# 
+# ##initialize model
+# set.seed(104)
+# nn_model <- keras_model_sequential()
+# 
+# 
+# ##define the model
+# nn_model %>%
+#   layer_dense(units = 100, activation = 'relu', input_shape = c(149), #149 features
+#               kernel_regularizer = regularizer_l1(0.01)) %>%
+#   layer_dropout(rate = 0.1) %>%
+#   layer_dense(units = 4, activation = 'softmax')
+# 
+# ##compile model
+# nn_model %>% compile(
+#   loss = 'categorical_crossentropy',
+#   optimizer = optimizer_nadam(learning_rate = 0.01),
+#   metrics = c('Recall', 'Precision', 'accuracy'))
+# 
+# 
+# 
+# ##train the model on train-fold data
+# set.seed(104)
+# history <- nn_model %>% fit(
+#  bag_of_words_train_features, bag_of_words_train_target,
+#   epochs = 30,
+#   batch_size = 5,
+#   shuffle = TRUE
+#   )
+#
+# #PLOT
+# plot(history)
+
+# ####################################################################
+# 
+# # Predictions on test data
+# set.seed(104)
+# nn_bow_test_metrics <- nn_model %>% evaluate(bag_of_words_test_features, bag_of_words_test_target)
+# nn_bow_test_metrics
+# 
+# #Confusion matrix
+# set.seed(104)
+# nn_bow_test_fitted <- nn_model %>% predict(bag_of_words_test_features) %>% k_argmax() %>% as.numeric()
+# nn_bow_neural_network_conf_mat = table(bag_of_words_test_target_original, nn_bow_test_fitted)
+# 
+# # test precision
+# nn_bow_test_ppv = unname(nn_bow_test_metrics[3])
+
+# # test recall
+# nn_bow_test_recall = unname(nn_bow_test_metrics[2])
+# 
+# ##F1-score
+# nn_bow_test_f1_score <- 2 * (nn_bow_test_ppv * nn_bow_test_recall) / (nn_bow_test_ppv + nn_bow_test_recall)
+# nn_bow_test_f1_score
+
+#save results
+#saveRDS(results, "data/nn_model_bow_results.rds")
+
+######################################################################
+
+
+#rename models
+rownames(bowNNresults) = paste0("BoW NN model ", 1:nrow(bowNNresults))
+
+#check for optimal model with best train and validation f1-scores
+nnbest_results = bowNNresults %>% filter(train_f1 > 0.5 & valid_f1> 0.5) %>% select(num_nodes,drop_out, activation_function,learning_rate, L1_regularization, train_accuracy, valid_accuracy,train_ppv,valid_ppv,train_recall,     
+valid_recall, train_f1, valid_f1) %>%arrange(desc(train_f1),desc(valid_f1))  
+
+#round off
+nnbest_results$train_recall = round(nnbest_results$train_recall, 3)
+nnbest_results$train_f1 = round(nnbest_results$train_f1, 3)
+nnbest_results$train_accuracy = round(nnbest_results$train_accuracy, 3)
+
+nnbest_results$valid_recall = round(nnbest_results$valid_recall, 3)
+nnbest_results$valid_f1 = round(nnbest_results$valid_f1, 3)
+nnbest_results$valid_accuracy = round(nnbest_results$valid_accuracy, 3)
+
+```
+
+```{r, eval=T, include=F}
+#BEST RESULTS
+#colnames
+colnames(nnbest_results) = c("Input nodes", "Drop-out rate", 
+                             "Activation function","Learning rate", 
+                             "L1 regularization", "Train accuracy", 
+                             "Validation accuracy","Train precision", 
+                             "Validation precision", "Train recall", 
+                             "Validation recall", "Train F1-score",
+                             "Validation F1-score")
+
+#arrange columns
+nnbest_results = nnbest_results %>% select(`Input nodes`, `Drop-out rate`, `Activation function`, `Learning rate`, `L1 regularization`,
+`Train F1-score`, `Validation F1-score`, `Train accuracy`, `Validation accuracy`, `Train recall`, `Validation recall`, `Train precision`, `Validation precision`)
+
+```
+
+```{r resultsNN1}
+#| label: tbl-5
+#| tbl-cap: Best Feed Forward Neural Network models, using bag-of-words features and sorted in descending order of training and validation F1-score
+
+#print table
+kable(nnbest_results[1:5,], caption="")
+
+                                      
+```
+
+```{r bowNN2, eval=T, include=F}
+
+#get all models results on test set
+all_results = readRDS("data/test_performance.rds")
+
+#model ID of best sub model
+all_results[5, "model_ID"] = rownames(nnbest_results)[1]
+
+#save results again:
+saveRDS(all_results, "data/test_performance.rds")
+
+#load test set performance for BoW model
+load("data/bow_neural_networks.RData")
+all_results = readRDS("data/test_performance.rds")
+
+#parameters of best sub model
+all_results[5, "parameters"] = paste(paste0(c("Input nodes = ", 
+                "activation function = ", 
+                "Learning rate = ", 
+                "L1 regularization = "), 
+              unname(bowNNresults[1, 1:4])), 
+              collapse=", ")
+
+# Compute the test accuracy
+all_results[5, "test_accuracy"] <- round(sum(diag(nn_bow_neural_network_conf_mat))/sum(nn_bow_neural_network_conf_mat),3)
+
+# Compute the test recall
+all_results[5, "test_recall"] <- round(nn_bow_test_recall, 3)
+
+# Compute the test positive predictive value or "precision"
+# Compute the test positive predictive value or "precision"
+all_results[5, "test_precision"] <- round(nn_bow_test_ppv, 3)
+
+# Compute the test F1-score
+all_results[5, "test_f1"] <- round(nn_bow_test_f1_score, 3)
+
+
+```
+
+
+<br>
+
+## Term Frequency-Inverse Document Frequency Models
+
+
+```{r tfidf, eval=T, include=F}
+
+#caclulate tf-idf
+sona_tdf = sona_tdf %>%
+  group_by(sentence_id, word)%>% #bind_tf_idf takes in input where rows are unique combinations of file id and word
+  bind_tf_idf(word,sentence_id, n) #get tf-idf
+
+################################################################################
+
+#wide format table
+tfidf = sona_tdf %>%
+  select(sentence_id, president_label, word, tf_idf) %>%
+  group_by(sentence_id, president_label)%>%
+  pivot_wider(names_from = word,  #columns are words
+  values_from = tf_idf, values_fill = 0) 
+
+################################################################################
+
+```
+
+```{r tfidfSplits, eval=T, include=F}
+
+#check for class imbalance
+table(tfidf$president_label)
+
+#up-sample
+set.seed(123)
+tfidf = upSample(x = tfidf[, colnames(tfidf) != "president_label"], 
+                      y = as.factor(tfidf$president_label),
+                      yname = "president_label")
+
+#check for class balance after up-sampling
+table(tfidf$president_label)
+
+################################################################################
+
+#70% training data
+df_train <- tfidf[training_ids,]
+
+#30% test data
+df_test <- tfidf[-training_ids,]
+
+#convert categorical dependent variable to factor
+df_train$president_label = as.factor(df_train$president_label) #train
+df_test$president_label = as.factor(df_test$president_label) #test
+
+#exclude filename for training models
+df_train = subset(df_train, select=-sentence_id)
+df_test = subset(df_test, select=-sentence_id)
+
+#check train and test dims
+dim(df_train)[1] + dim(df_test)[1] == dim(tfidf)[1] #rows
+dim(df_train)[2] == dim(df_test)[2] & dim(df_test)[2] == dim(tfidf)[2]-1 #columns, excluding filename column
+
+#check for class balance
+table(df_train$president_label)
+table(df_test$president_label)
+
+```
+
+
+### Classification Trees
+
+In @tbl-6 below, we see that sub-model 1 and 2 had the best mean CV F1-score of 0.583, training F1-score of 0.742, mean CV accuracy of 0.596, and training accuracy of 0.746. In parallel, we see that that all other metrics for sub-models 1 and 2 are among the best performing models. Model 1 parameters were chosen to re-train the model on the full training set. We see interesting clusters in the TF-IDF tree diagram in @fig-8 .
+
+
+```{r tfidfClassTree, eval=T, include=F}
+
+# Define the parameters for grid search
+cp_grid <- seq(0.001, 1, length=10)
+minbucket_grid <- seq(1, 10, 1)
+minsplit_grid <- seq(1, 10, 1)
+
+#empty data frame to store results for each combination of parameters above
+results <<- data.frame(cp = double(), minbucket = integer(), minsplit = integer(),
+                      train_accuracy = double(), valid_accuracy = double(),
+                      train_recall = double(), valid_recall = double(),
+                      train_ppv = double(), valid_ppv = double(),
+                      train_f1 = double(), valid_f1 = double())
+
+#number of folds
+num_folds <- 5
+
+#create folds
+set.seed(123)
+folds <- createFolds(df_train$president_label, k = num_folds, list = TRUE)
+
+#GRIDSEARCH
+for (cp_val in cp_grid) {
+  for (minbuck in minbucket_grid) {
+    for (minspl in minsplit_grid) {
+
+      ###########################################
+
+      #empty vectors for results at each fold...
+      train_accuracy_values <- numeric(num_folds)
+      valid_accuracy_values <- numeric(num_folds)
+
+      train_recall_values <- numeric(num_folds)
+      valid_recall_values <- numeric(num_folds)
+
+      train_ppv_values <- numeric(num_folds)
+      valid_ppv_values <- numeric(num_folds)
+
+      train_f1_values <- numeric(num_folds)
+      valid_f1_values <- numeric(num_folds)
+
+
+      ###########################################
+      #for each fold...
+      for (fold in 1:num_folds) {
+
+        #split data into k-fold train and validation sets
+        train_indices <- unlist(folds[-fold]) #all folds except 1 fold
+        valid_indices <- unlist(folds[fold]) #only 1 fold
+        
+        df_train_fold <- df_train[train_indices, ]
+        df_valid_fold <- df_train[valid_indices, ]
+
+      ###########################################
+        
+        #fit the model on the training-fold data
+        #with parameters at the current iteration
+        set.seed(123)
+        tree_fit <- rpart(president_label ~ ., df_train_fold,
+                          control = rpart.control(minsplit = minspl,
+                                                  minbucket = minbuck,
+                                                  cp = cp_val),
+                          method="class")
+
+      ###########################################
+
+        # Predict on train data
+        set.seed(123)
+        fittedtrain <- unname(predict(tree_fit, type = 'class'))
+
+        # Train confusion matrix
+        train_conf_mat <- confusionMatrix(data=fittedtrain, #predicted
+                                          reference=as.factor(df_train_fold$president_label), #true
+                                          mode = "everything") #all metrics
+
+        #ensure Nan and NA values are 0 --> Nans appear when division by 0
+        train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
+        train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
+
+        # Compute the average train accuracy at current fold
+        train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
+
+        # Compute the average train recall at current fold
+        train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
+
+
+        # Compute the average train positive predictive value or "precision" at current fold
+        train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+        # Compute the average train F1-score at current fold
+        train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
+
+        ###########################################
+
+        # Predict on validation set
+        set.seed(123)
+        fittedvalid <- unname(predict(tree_fit, df_valid_fold, type = 'class'))
+
+        # validation set confusion matrix
+        valid_conf_mat <- confusionMatrix(data=fittedvalid, #predicted
+                                          reference=as.factor(df_valid_fold$president_label), #true
+                                          mode = "everything") #all metrics
+
+        #ensure Nan and NA values are 0
+        valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
+        valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
+
+        # Compute the average validation accuracy at current fold
+        valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
+
+        # Compute the average validation recall at current fold
+        valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
+
+        # Compute the average validation positive predictive value or "precision" at current fold
+        valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+        # Compute the average validation F1-score at current fold
+        valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
+
+      }
+      ###########################################
+
+      # Calculate the mean results across all folds
+      
+      ##Accuracy
+      mean_train_accuracy <- mean(train_accuracy_values) #train
+      mean_valid_accuracy <- mean(valid_accuracy_values) #validation
+      
+      ##recall
+      mean_train_recall <- mean(train_recall_values) #train
+      mean_valid_recall <- mean(valid_recall_values) #validation
+      
+
+      ##Positive predictive value
+      mean_train_ppv <- mean(train_ppv_values) #train
+      mean_valid_ppv <- mean(valid_ppv_values) #validation
+      
+      ##F1-score
+      mean_train_f1 <- mean(train_f1_values) #train
+      mean_valid_f1 <- mean(valid_f1_values) #validation
+      
+
+      ###########################################
+
+      # Store the results
+      results <- rbind(results, data.frame(cp = cp_val,
+                                           minbucket = minbuck,
+                                           minsplit = minspl,
+                                           train_accuracy = mean_train_accuracy,
+                                           valid_accuracy = mean_valid_accuracy,
+                                           train_recall = mean_train_recall,
+                                           valid_recall = mean_valid_recall,
+                                           train_ppv = mean_train_ppv, valid_ppv = mean_valid_ppv,
+                                           train_f1 = mean_train_f1, valid_f1 = mean_valid_f1
+                                           ))
+    }
+  }
+}
+
+################################################################################
+
+#rename models
+rownames(results) = paste0("TFIDF tree model ", 1:nrow(results))
+
+
+#check for optimal model with best train and validation f1-scores
+best_results = results %>% filter(train_f1 > 0.5 & valid_f1> 0.5) %>% select(cp, #best = 0.001
+                                                              minbucket, #best = 1
+                                                              minsplit, #best = 1
+                                                        train_f1, valid_f1, train_accuracy, valid_accuracy,
+                                                        train_recall, valid_recall, train_ppv, valid_ppv)%>% 
+                                                        arrange(desc(train_f1),
+                                                                desc(valid_f1))
+
+
+################################################################################
+
+# Fit the best tree model to the original training data
+set.seed(123)
+tfidf_tree_fit <- rpart(president_label ~ . , df_train,
+                             control = rpart.control(minsplit =1,
+                                                     minbucket =1 ,
+                                                     cp =0.001),
+                                                     method="class")
+
+#plot tree
+# options(repr.plot.width = 12, repr.plot.height = 10) # set plot size in the notebook
+tree_plot = prp(tfidf_tree_fit, cex=0.4, type=0,col="darkgreen",
+    extra=1, #display number of observations for each terminal node
+    roundint=F, #don't round to integers in output
+    digits=1) #display 5 decimal places in output
+
+##############################################################################
+
+#predictions on test data
+set.seed(123)
+fittedtest <- predict(tfidf_tree_fit, df_test, type = 'class')
+
+#test set confusion matrix
+test_conf_mat <- confusionMatrix(data=fittedtest, #predicted
+                                 reference=as.factor(df_test$president_label), #true
+                                 mode = "everything") 
+
+#ensure Nan and NA values are 0
+test_conf_mat$byClass[is.na(test_conf_mat$byClass)] <- 0
+test_conf_mat$byClass[is.nan(test_conf_mat$byClass)] <- 0
+
+# Compute the test accuracy
+all_results[6, "test_accuracy"] <- round(test_conf_mat$overall['Accuracy'], 3)
+
+# Compute the test recall
+all_results[6, "test_recall"] <- round(mean(test_conf_mat$byClass[,'Sensitivity']), 3)
+
+# Compute the test positive predictive value or "precision"
+all_results[6, "test_precision"] <- round(mean(test_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+# Compute the test F1-score
+all_results[6, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
+
+#model ID of best sub model
+all_results[6, "model_ID"] = rownames(best_results)[1]
+
+#parameters of best sub model
+all_results[6, "parameters"] =  paste(paste0(c("cp = ", "minbucket = ", "minsplit = "), unname(best_results[1, 1:3])), collapse=", ")
+
+```
+
+```{r resultsTree2}
+#| label: tbl-6
+#| tbl-cap: Best Classification Trees, using TF-IDF features and sorted in descending order of training and validation F1-score
+
+#colnames
+colnames(best_results) = c("cp", "minbucket", "minsplit",
+                           "Train F1-score", "Validation F1-score", 
+                           "Train accuracy", "Validation accuracy", 
+                           "Train recall", "Validation recall", 
+                           "Train precision", "Validation precision")
+
+  
+#print table
+kable(round(best_results[1:5,], 3), caption="")
+
+
+```
+
+
+<br>
+
+### Random Forests
+
+In @tbl-7 below we see that the grid-search performed equally well for all *ntree* values. All metrics are relatively good, with values above 0.6, suggesting good model fit. We see that the mean CV-F1 score (0.653) is similar to the training F1-score (0.647). We also see that the mean CV accuracy (0.654) is similar to the training accuracy (0.647). I chose RF sub-model 2 with *ntrees* = 500 to re-train the full training set, which strikes a balance between too many and too few trees.
+
+
+```{r tfidfRF, eval=T, include=F}
+
+#empty data frame to store results for each combination of parameters above
+results <<- data.frame(ntree = integer(),
+                      train_accuracy = double(), valid_accuracy = double(),
+                      train_recall = double(), valid_recall = double(),
+                      train_ppv = double(), valid_ppv = double(),
+                      train_f1 = double(), valid_f1 = double())
+
+#grid search
+ntrees_grid = c(100, 500, 1000)
+
+#number of folds
+num_folds <- 5
+
+#create folds
+set.seed(123)
+folds <- createFolds(df_train$president_label, k = num_folds, list = TRUE)
+
+###########################################
+
+#gridsearch
+for (ntree in ntrees_grid) {
+  
+  #empty vectors for results at each fold...
+  train_accuracy_values <- numeric(num_folds)
+  valid_accuracy_values <- numeric(num_folds)
+  
+  train_recall_values <- numeric(num_folds)
+  valid_recall_values <- numeric(num_folds)
+  
+  train_ppv_values <- numeric(num_folds)
+  valid_ppv_values <- numeric(num_folds)
+  
+  train_f1_values <- numeric(num_folds)
+  valid_f1_values <- numeric(num_folds)
+
+
+ ###########################################
+
+  #for each fold...
+  for (fold in 1:num_folds) {
+  
+    #split data into k-fold train and validation sets
+    train_indices <- unlist(folds[-fold]) #all folds except 1 fold
+    valid_indices <- unlist(folds[fold]) #only 1 fold
+    
+    df_train_fold <- df_train[train_indices, ]
+    df_valid_fold <- df_train[valid_indices, ]
+  
+    ###########################################
+    
+    #fit the model at current fold
+    set.seed(123)
+    rf_fit <- randomForest(as.factor(president_label) ~ ., data=df_train_fold,
+                       ntree = 500,  #no improvement at ntree=200 or ntree= 500
+                        importance = TRUE,
+                       na.action=na.exclude,
+                        do.trace = 25)
+  
+   ###########################################
+  
+    # Predict on train data
+    set.seed(123)
+    fittedtrain <- unname(predict(rf_fit, type = 'class'))
+  
+    # Train confusion matrix
+    train_conf_mat <- confusionMatrix(data=fittedtrain, #predicted
+                                      reference=as.factor(df_train_fold$president_label), #true
+                                      mode = "everything") #all metrics
+  
+    #ensure Nan and NA values are 0
+    train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
+    train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
+  
+    # Compute the average train accuracy at current fold
+    train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
+  
+    # Compute the average train recall at current fold
+    train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
+  
+    # Compute the average train positive predictive value or "precision" at current fold
+    train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
+  
+    # Compute the average train F1-score at current fold
+    train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
+  
+    ###########################################
+  
+    # Predict on validation data
+    set.seed(123)
+    fittedvalid <- unname(predict(rf_fit, df_valid_fold, type = 'class'))
+  
+    # validation set confusion matrix
+    valid_conf_mat <- confusionMatrix(data=fittedvalid, #fitted
+                                      reference=as.factor(df_valid_fold$president_label), #true
+                                      mode = "everything") #all metrics
+  
+    #ensure Nan and NA values are 0
+    valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
+    valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
+  
+    # Compute the average validation accuracy at current fold
+    valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
+  
+    # Compute the average validation  recall at current fold
+    valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
+  
+    # Compute the average validation positive predictive value or "precision" at current fold
+    valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
+  
+    # Compute average validation F1-score at current fold
+    valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
+  
+  }
+###########################################
+  
+  # Calculate the mean results across all folds
+  
+  ##average accuracy
+  mean_train_accuracy <- mean(train_accuracy_values) #train
+  mean_valid_accuracy <- mean(valid_accuracy_values) #validation
+  
+  ##average recall
+  mean_train_recall <- mean(train_recall_values) #train
+  mean_valid_recall <- mean(valid_recall_values) #validation
+  
+  ##average PPV
+  mean_train_ppv <- mean(train_ppv_values) #train
+  mean_valid_ppv <- mean(valid_ppv_values) #validation
+  
+  ##average F1-score
+  mean_train_f1 <- mean(train_f1_values) #train
+  mean_valid_f1 <- mean(valid_f1_values) #validation
+
+  
+  ###########################################
+  
+  # Store the results
+  results <- rbind(results, data.frame(ntree = ntree, 
+                                       train_accuracy = mean_train_accuracy,
+                                       valid_accuracy = mean_valid_accuracy,
+                                       
+                                       train_recall = mean_train_recall,
+                                       valid_recall = mean_valid_recall,
+                                       
+                                       train_ppv = mean_train_ppv, 
+                                       valid_ppv = mean_valid_ppv,
+                                       
+                                       train_f1 = mean_train_f1, 
+                                       valid_f1 = mean_valid_f1))
+}
+
+################################################################################
+
+#rename models
+rownames(results) = paste0("TFIDF RF model ", 1:nrow(results))
+
+#check for optimal model with best train and validation f1-scores
+best_results = results %>% filter(train_f1 > 0.4 & valid_f1> 0.4) %>% select(ntree,
+ 
+                                train_f1, valid_f1, train_accuracy, valid_accuracy,
+                                                        train_recall, valid_recall,  train_ppv, valid_ppv)%>%
+                                                        arrange(desc(train_f1),
+                                                                desc(valid_f1))
+
+
+################################################################################
+
+#re-fit the best model on entire train set
+set.seed(123)
+rf_fit <- randomForest(as.factor(president_label) ~ ., data=df_train,
+                   ntree = 500, 
+                   importance = TRUE,
+                   na.action = na.exclude,
+                    do.trace = 25)
+
+###############################################################################
+
+#prediction on test data
+set.seed(123)
+fittedtest <- predict(rf_fit, df_test, type = 'class')
+
+#test confusion matrix
+test_conf_mat <- confusionMatrix(data=fittedtest, #predicted data
+                                 reference=as.factor(df_test$president_label), #reference data
+                                 mode = "everything") #all metrics
+
+#ensure Nan and NA values are 0
+test_conf_mat$byClass[is.na(test_conf_mat$byClass)] <- 0
+test_conf_mat$byClass[is.nan(test_conf_mat$byClass)] <- 0
+
+# Compute the test accuracy
+all_results[7, "test_accuracy"] <- round(test_conf_mat$overall['Accuracy'], 3)
+
+# Compute the test recall
+all_results[7, "test_recall"] <- round(mean(test_conf_mat$byClass[,'Sensitivity']), 3)
+
+# Compute the test positive predictive value or "precision"
+all_results[7, "test_precision"] <- round(mean(test_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+# Compute the test F1-score
+all_results[7, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
+
+#model ID of best sub model
+all_results[7, "model_ID"] = rownames(best_results)[2]
+
+#parameters of best sub model
+all_results[7, "parameters"] = paste0("ntree=", unname(best_results[2, 1]))
+
+```
+
+```{r resultsRF2}
+#| label: tbl-7
+#| tbl-cap: Best Random Forest models, using TF-IDF features and sorted in descending order of training and validation F1-score
+#colnames
+colnames(best_results) = c("ntree","Train F1-score", "Validation F1-score", "Train accuracy", "Validation accuracy", "Train recall", "Validation recall", "Train precision", "Validation precision")
+
+  
+#print table
+kable(round(best_results, 3), caption="")
+
+
+```
+
+
+<br>
+
+### Extreme Gradient Boosting
+
+@tbl-8 below suggests that sub-model 39 has the best model performance, and so this model was re-trained on the full training dataset. We see that the training F1-score (0.637) and training accuracy (0.637) is relatively good, however the mean CV F1-score (0.465) and mean CV accuracy (0.481) is relatively low . We see a similar trend for all other metrics, where the training performance is good, but the validation performance is poor, suggestive of model overfitting.
+
+
+```{r tfidfXGB, eval=T, include=F}
+
+#Grid search
+max_depth_grid = c(1, 2, 3, 4, 5, 6) #up to default value = 6
+eta_grid = c(0.2, 0.4, 0.6, 1) #ranges from 0 to 1
+gamma_grid = c(0.5, 1)
+
+
+#empty data frame to store results for each combination of parameters above
+results <<- data.frame(max_depth = integer(),
+                       eta = double(),
+                       gamma = double(),
+                      train_accuracy = double(), valid_accuracy = double(),
+                      train_recall = double(), valid_recall = double(),
+                      train_ppv = double(), valid_ppv = double(),
+                      train_f1 = double(), valid_f1 = double())
+
+#number of folds
+num_folds <- 5
+
+#create folds
+set.seed(123)
+folds <- createFolds(df_train$president_label, k = num_folds, list = TRUE)
+
+###########################################
+
+#for each parameter combination...
+for (md in max_depth_grid) {
+  for (e in eta_grid) {
+    for (g in gamma_grid) {
+
+      #empty vectors for results at each fold...
+      train_accuracy_values <- numeric(num_folds)
+      valid_accuracy_values <- numeric(num_folds)
+
+      train_recall_values <- numeric(num_folds)
+      valid_recall_values <- numeric(num_folds)
+
+      train_ppv_values <- numeric(num_folds)
+      valid_ppv_values <- numeric(num_folds)
+
+      train_f1_values <- numeric(num_folds)
+      valid_f1_values <- numeric(num_folds)
+
+
+################################################
+
+      #for each fold...
+      for (fold in 1:num_folds) {
+
+
+        #split data into k-fold train and validation sets
+        train_indices <- unlist(folds[-fold]) #all folds except 1 fold
+        valid_indices <- unlist(folds[fold]) #only 1 fold
+        
+        df_train_fold <- df_train[train_indices, ]
+        df_valid_fold <- df_train[valid_indices, ]
+
+        #get train label data
+        president_labels = df_train_fold$president_label
+        train_fold_label = as.integer(df_train_fold$president_label)-1 #xgboost: numeric data & classes start at 0
+        df_train_fold$president_label = NULL #remove label data
+
+        #get validation label data
+        president_labels = df_valid_fold$president_label
+        valid_fold_label = as.integer(df_valid_fold$president_label)-1 #xgboost: numeric data & classes start at 0
+        df_valid_fold$president_label = NULL #remove label data
+
+        #convert dataframes to appropriate inputs for xgboost
+        ##validation
+        df_valid_fold_xgb = xgb.DMatrix(as.matrix(sapply(df_valid_fold,
+                                                         as.numeric)),
+                                        label = valid_fold_label,
+                                        nthread = 2)
+        ##train
+        df_train_fold_xgb = xgb.DMatrix(as.matrix(sapply(df_train_fold,
+                                                         as.numeric)),
+                                        label = train_fold_label,
+                                        nthread = 2)
+
+
+
+        ###########################################
+        
+        #fit the model with parameters at the current iteration
+        set.seed(123)
+        xgb_fit <- xgboost(data=df_train_fold_xgb,
+                           label=train_fold_label,
+                           max_depth = md, eta = e, gamma= g, lambda = 1,
+                           nthread = 2, nrounds = 2,
+                           params=list(objective = "multi:softmax",
+                                       num_class=4))
+
+       ###########################################
+
+        # Predict on train data
+        set.seed(123)
+        fittedtrain <- predict(xgb_fit, df_train_fold_xgb, type = 'class')
+
+        #convert numeric fitted values in train data to factors
+        fittedtrain = levels(as.factor(df_train$president_label))[fittedtrain+1] #offset by +1 because xgboost starts class at 0
+
+        #convert numeric fitted values in reference data to factors
+        ##use df_train factors which is gauranteed to include all classes
+        ref = levels(as.factor(df_train$president_label))[train_fold_label+1] #offset by +1 because xgboost starts class at 0
+
+        # train confusion matrix
+        train_conf_mat <- confusionMatrix(data=factor(fittedtrain,
+                                                         levels=c("Mandela",
+                                                                  "Mbeki",
+                                                                  "Ramaphosa",
+                                                                  "Zuma")),
+                                          reference=factor(ref,
+                                                         levels=c("Mandela",
+                                                                  "Mbeki",
+                                                                  "Ramaphosa",
+                                                                  "Zuma")),
+                                          mode = "everything")
+
+        #ensure Nan and NA values are 0
+        train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
+        train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
+
+        # Compute the average train accuracy at current fold
+        train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
+
+        # Compute the average train recall at current fold
+        train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
+
+        # Compute the average train positive predictive value or "precision" at current fold
+        train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+        # Compute the average train F1-score at current fold
+        train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
+
+
+        ###########################################
+
+        # Predict on validation data
+        set.seed(123)
+        fittedvalid <- predict(xgb_fit, df_valid_fold_xgb, type = 'class')
+
+        #convert numeric fitted values in valid data to factors
+        ##use df_train factors which is gauranteed to include all classes
+        fittedvalid = levels(as.factor(df_train$president_label))[fittedvalid+1] #offset by +1 because xgboost starts class at 0
+
+        #convert numeric fitted values in reference data to factors
+        ##use df_train factors which is gauranteed to include all classes
+        ref = levels(as.factor(df_train$president_label))[valid_fold_label+1] #offset by 1 because xgboost starts class at 0
+
+        # validation confusion matrix
+        valid_conf_mat <- confusionMatrix(data=factor(fittedvalid,
+                                                         levels=c("Mandela",
+                                                                  "Mbeki",
+                                                                  "Ramaphosa",
+                                                                  "Zuma")),
+                                          reference=factor(ref,
+                                                         levels=c("Mandela",
+                                                                  "Mbeki",
+                                                                  "Ramaphosa",
+                                                                  "Zuma")),
+                                          mode = "everything")
+
+        #ensure Nan and NA values are 0
+        valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
+        valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
+
+        # Compute the average validation accuracy at current fold
+        valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
+
+        # Compute the average validation recall at current fold
+        valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
+
+        # Compute the average validation positive predictive value or "precision" at current fold
+        valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+        # Compute average validation F1-score at current fold
+        valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
+
+      }
+      ###########################################
+
+      # Calculate the mean results across all folds
+      
+      ##accuracy
+      mean_train_accuracy <- mean(train_accuracy_values) #train
+      mean_valid_accuracy <- mean(valid_accuracy_values) #validation
+      
+      ##recall
+      mean_train_recall <- mean(train_recall_values) #train
+      mean_valid_recall <- mean(valid_recall_values) #validation
+
+      ##PPV
+      mean_train_ppv <- mean(train_ppv_values) #train
+      mean_valid_ppv <- mean(valid_ppv_values) #validation
+
+      ##F1-Score
+      mean_train_f1 <- mean(train_f1_values) #train
+      mean_valid_f1 <- mean(valid_f1_values) #validation
+      
+
+      ###########################################
+
+      # Store the results
+      results <- rbind(results, data.frame(max_depth = md,
+                       eta = e,
+                       gamma = g,
+                       train_accuracy = mean_train_accuracy,
+                       valid_accuracy = mean_valid_accuracy,
+                       train_recall = mean_train_recall, valid_recall = mean_valid_recall,
+                       train_ppv = mean_train_ppv, valid_ppv = mean_valid_ppv,
+                       train_f1 = mean_train_f1, valid_f1 = mean_valid_f1))
+    }
+  }
+}
+
+
+################################################################################
+
+#rename models
+rownames(results) = paste0("TFIDF XGB model ", 1:nrow(results))
+
+#check for optimal model with best train and validation f1-scores
+best_results = results %>% filter(train_f1 > 0.4 & valid_f1> 0.4) %>% select(max_depth, eta, gamma, train_f1, valid_f1, 
+                                                                             train_accuracy, valid_accuracy,
+                                                                             train_recall, valid_recall,
+                                                                             train_ppv, valid_ppv)%>%
+                                                        arrange(desc(train_f1),
+                                                                desc(valid_f1))
+
+################################################################################
+#re-fit the model on entire train set
+
+#get train label data
+president_labels = df_train$president_label
+train_label = as.integer(df_train$president_label)-1 #convert to numeric and offset by -1 because xgboost starts classes at 0
+
+
+#convert dataframes to appropriate inputs for xgboost
+df_train_xgb = xgb.DMatrix(as.matrix(sapply(df_train[, -c(150)], #remove label column
+                                               as.numeric)),
+                              label = train_label,
+                              nthread = 2)
+
+#fit model to full train dataset
+set.seed(123)
+xgb_fit <- xgboost(data=df_train_xgb,
+                 label=train_label,
+                 max_depth = 6, eta = 1, gamma= 0.5, lambda = 1,
+                 nthread = 2, nrounds = 2,
+                 params=list(objective = "multi:softmax",
+                             num_class=4))
+
+
+
+
+# ###############################################################################
+#predictions on test set
+
+##get test label data
+president_labels = df_test$president_label
+test_label = as.integer(df_test$president_label)-1 #convert to numeric and offset by -1 because xgboost starts classes at 0
+
+#true test labels
+test_labels = df_test$president_label
+test_label = as.integer(as.factor(df_test$president_label))-1
+
+##convert dataframes to appropriate inputs for xgboost
+df_test_xgb = xgb.DMatrix(as.matrix(sapply(df_test[, -c(150)], #remove label column
+                                               as.numeric)),
+                              label = test_label,
+                              nthread = 2)
+
+#make predictions on test data
+set.seed(123)
+fittedtest <- predict(xgb_fit, df_test_xgb, type = 'class')
+
+
+#convert numeric fitted values in test data to factors
+fittedtest = levels(as.factor(df_train$president_label))[fittedtest+1] #offset by 
+
+#convert numeric reference values in reference data to factors
+ref = levels(as.factor(df_train$president_label))[test_label+1] #offset by 1 
+
+# validation confusion matrix
+test_conf_mat <- confusionMatrix(data=factor(fittedtest,
+                                                 levels=c("Mandela",
+                                                          "Mbeki",
+                                                          "Ramaphosa",
+                                                          "Zuma")),
+                                  reference=factor(ref,
+                                                 levels=c("Mandela",
+                                                          "Mbeki",
+                                                          "Ramaphosa",
+                                                          "Zuma")),
+                                  mode = "everything")
+
+
+#ensure Nan and NA values are 0
+test_conf_mat$byClass[is.na(test_conf_mat$byClass)] <- 0
+test_conf_mat$byClass[is.nan(test_conf_mat$byClass)] <- 0
+
+# Compute the test accuracy
+all_results[8, "test_accuracy"] <- round(test_conf_mat$overall['Accuracy'], 3)
+
+# Compute the test recall
+all_results[8, "test_recall"] <- round(mean(test_conf_mat$byClass[,'Sensitivity']), 3)
+
+# Compute the test positive predictive value or "precision"
+# Compute the test positive predictive value or "precision"
+all_results[8, "test_precision"] <- round(mean(test_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+# Compute the test F1-score
+all_results[8, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
+
+#model ID of best sub model
+all_results[8, "model_ID"] = rownames(best_results)[1]
+
+#parameters of best sub model
+all_results[8, "parameters"] = paste(paste0(c("maxdepth = ", "eta = ", "gamma = "), unname(best_results[1, 1:3])), collapse=", ")
+
+#best results colnames
+colnames(best_results) = c("maxdepth", "eta", "gamma",
+                           "Train F1-score", "Validation F1-score", 
+                           "Train accuracy", "Validation accuracy",
+                           "Train recall", "Validation recall", 
+                           "Train precision", "Validation precision")
+```
+
+```{r resultsXGB2}
+#| label: tbl-8
+#| tbl-cap: Best XGBoost models, using TF-IDF features and sorted in descending order of training and validation F1-score
+
+  
+#print table
+kable(round(best_results[1:5, ], 3), caption="")
+
+```
+
+
+<br>
+
+### Naïve Bayes
+
+As seen in @tbl-9 below, all "top" performing models displayed poor performance. These models all displayed the same metric values, with a training F1-score of 0.1 equivalent to the mean CV F1-score of 0.1. The training accuracy and mean CV accuracy are both 0.25 suggesting poor model performance. I used the simplest model, model 1 with no Laplace smoothing to re-train the model on the full training dataset.
+
+
+```{r tfidfNB, eval=T, include=F}
+
+#laplace values
+laplace_grid = seq(0, 1, 0.1)
+
+#number of folds
+num_folds <- 5
+
+#create folds
+set.seed(123)
+folds <- createFolds(df_train$president_label, k = num_folds, list = TRUE)
+
+#empty data frame to store results for each combination of parameters above
+results <<- data.frame(laplace = double(),
+                      train_accuracy = double(), valid_accuracy = double(),
+                      train_recall = double(), valid_recall = double(),
+                      train_ppv = double(), valid_ppv = double(),
+                      train_f1 = double(), valid_f1 = double())
+
+
+###########################################
+#GRIDSEARCH
+for (lap in laplace_grid) {
+  
+  #empty vectors for results at each fold...
+  train_accuracy_values <- numeric(num_folds)
+  valid_accuracy_values <- numeric(num_folds)
+
+  train_recall_values <- numeric(num_folds)
+  valid_recall_values <- numeric(num_folds)
+
+  train_ppv_values <- numeric(num_folds)
+  valid_ppv_values <- numeric(num_folds)
+
+  train_f1_values <- numeric(num_folds)
+  valid_f1_values <- numeric(num_folds)
+
+
+  ###########################################
+
+  #for each fold...
+  for (fold in 1:num_folds) {
+
+    #split data into k-fold train and validation sets
+    train_indices <- unlist(folds[-fold]) #all folds except 1 fold
+    valid_indices <- unlist(folds[fold]) #only 1 fold
+    
+    df_train_fold <- df_train[train_indices, ]
+    df_valid_fold <- df_train[valid_indices, ]
+
+    ###########################################
+    #fit the model with parameters at the current iteration
+    set.seed(123)
+    nb_fit <- naiveBayes(president_label ~ ., data=df_train_fold,
+                       laplace=lap)
+
+    ###########################################
+
+    # Predict on train data
+    set.seed(123)
+    fittedtrain <- unname(predict(nb_fit, df_train_fold, type = 'class'))
+
+    # Train confusion matrix
+    train_conf_mat <- confusionMatrix(data=fittedtrain, reference=df_train_fold$president_label, mode = "everything")
+
+    #ensure Nan and NA values are 0
+    train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
+    train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
+
+    # Compute the train accuracy at current fold
+    train_accuracy_values[fold] <- round(train_conf_mat$overall['Accuracy'], 3)
+
+    # Compute the average train recall at current fold
+    train_recall_values[fold] <- round(mean(train_conf_mat$byClass[,'Sensitivity']), 3)
+
+
+    # Compute the average train positive predictive value or "precision" at current fold
+    train_ppv_values[fold] <- round(mean(train_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+    # Compute the train F1-score at current fold
+    train_f1_values[fold] <- round(mean(train_conf_mat$byClass[,'F1']), 3)
+
+
+    ###########################################
+
+    # Predict on valid data
+    set.seed(123)
+    fittedvalid <- unname(predict(nb_fit, df_valid_fold, type = 'class'))
+
+    # valid confusion matrix
+    valid_conf_mat <- confusionMatrix(data=fittedvalid, reference=df_valid_fold$president_label, mode = "everything")
+
+    #ensure Nan and NA values are 0
+    valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
+    valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
+
+    # Compute the valid accuracy at current fold
+    valid_accuracy_values[fold] <- round(valid_conf_mat$overall['Accuracy'], 3)
+
+    # Compute the average valid recall at current fold
+    valid_recall_values[fold] <- round(mean(valid_conf_mat$byClass[,'Sensitivity']), 3)
+
+    # Compute the average valid positive predictive value or "precision" at current fold
+    valid_ppv_values[fold] <- round(mean(valid_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+    # Compute the valid F1-score
+    valid_f1_values[fold] <- round(mean(valid_conf_mat$byClass[,'F1']), 3)
+
+    }
+    ###########################################
+
+    # Calculate the mean results across all folds
+    mean_train_accuracy <- mean(train_accuracy_values)
+    mean_valid_accuracy <- mean(valid_accuracy_values)
+
+    mean_train_recall <- mean(train_recall_values)
+    mean_valid_recall <- mean(valid_recall_values)
+
+
+    mean_train_ppv <- mean(train_ppv_values)
+    mean_valid_ppv <- mean(valid_ppv_values)
+
+    mean_train_f1 <- mean(train_f1_values)
+    mean_valid_f1 <- mean(valid_f1_values)
+
+
+    ###########################################
+
+    # Store the results
+    results <- rbind(results, data.frame(laplace=lap,
+                                     train_accuracy = mean_train_accuracy,
+                                     valid_accuracy = mean_valid_accuracy,
+                                     train_recall = mean_train_recall, 
+                                     valid_recall = mean_valid_recall,
+                                     train_ppv = mean_train_ppv, 
+                                     valid_ppv = mean_valid_ppv,
+                                     train_f1 = mean_train_f1, 
+                                     valid_f1 = mean_valid_f1))
+
+}
+
+############################################################################
+
+#rename models
+rownames(results) = paste0("TFIDF NB model ", 1:nrow(results))
+
+#check for optimal model with best train and validation f1-scores
+best_results = results
+
+################################################################################
+
+#re-fit the model on entire train set
+set.seed(123)
+nb_fit <- naiveBayes(president_label ~ ., data=df_train_fold, laplace=0)
+
+###############################################################################
+
+#test data
+set.seed(123)
+fittedtest <- predict(nb_fit, df_test, type = 'class')
+
+#test confusion matrix
+test_conf_mat <- confusionMatrix(data=fittedtest, reference=df_test$president_label, mode = "everything")
+
+#ensure Nan and NA values are 0
+test_conf_mat$byClass[is.na(test_conf_mat$byClass)] <- 0
+test_conf_mat$byClass[is.nan(test_conf_mat$byClass)] <- 0
+
+# Compute the test accuracy
+all_results[9, "test_accuracy"] <- round(test_conf_mat$overall['Accuracy'], 3)
+
+# Compute the test recall
+all_results[9, "test_recall"] <- round(mean(test_conf_mat$byClass[,'Sensitivity']), 3)
+
+# Compute the test positive predictive value or "precision"
+# Compute the test positive predictive value or "precision"
+all_results[9, "test_precision"] <- round(mean(test_conf_mat$byClass[,'Pos Pred Value']), 3)
+
+# Compute the test F1-score
+all_results[9, "test_f1"] <- round(mean(test_conf_mat$byClass[,'F1']), 3)
+
+#model ID of best sub model
+all_results[9, "model_ID"] = rownames(best_results)[1]
+
+#parameters of best sub model
+all_results[9, "parameters"] = paste0("Laplace=", unname(best_results[1, 1]))
+
+#BEST RESULTS
+#colnames
+colnames(best_results) = c("Laplace", "Train accuracy", "Validation accuracy", "Train recall", "Validation recall", "Train precision", "Validation precision", "Train F1-score", "Validation F1-score") 
+
+#arrange columns
+best_results = best_results %>% select(Laplace, `Train F1-score`, `Validation F1-score`, `Train accuracy`, `Validation accuracy`, `Train recall`, `Validation recall`, `Train precision`, `Validation precision`)
+
+
+```
+
+```{r resultsNB2}
+#| label: tbl-9
+#| tbl-cap: Best Naïve Bayesian models, using TF-IDF features and sorted in descending order of training and validation F1-score
+
+#print table
+kable(round(best_results[1:5,], 3), caption="")
+
+```
+
+```{r, eval=T, include=F}
+#save RDS
+saveRDS(all_results, "data/test_performance.rds")
+```
+
+
+<br>
+
+### Feed Forward Neural Network
+
+In @tbl-10 below, we see that model 42 had the best training F1-score of 0.849 and one of the best mean CV F1-scores of 0.637. We also see that model 42 had among the best training accuracies (0.851) and the best validation accuracy (0.650). All other metrics for model 42 are also among the top performing models.
+
+@fig-9 in **Addendum A** shows the change in the Log Loss, training- recall, precision and accuracy over all 30 epochs.
+
+
+```{r tfidfNN, eval=T, include=F}
+
+#read in saved results
+tfidfNNresults = readRDS("data/nn_model_tfidf_resultsss.rds")
+
+#UNCOMMENT CODE BELOW IF REQUIRED. 
+#SET UP CONDA ENVIRONMENT!
+#########################################################
+
+# # Set random seed
+# set.seed(104)
+# tensorflow::set_random_seed(104)
+
+
+##GRIDSEARCH
+#units_grid = c(50, 100, 200)
+#learning_rate_grid = c(0.001, 0.01, 0.1)
+#dropout_grid = c(0.01, 0.1)
+# activation_grid = c("tanh", "relu") 
+# # empty data frame to store results 
+#results <<- data.frame(num_nodes = integer(),
+#                      drop_out = double(),
+#                      activation_function = character(),
+#                      learning_rate = double(),
+#                      L1_regularization = double(),
+#                      train_accuracy = double(), valid_accuracy = double(),
+#                      train_recall = double(), valid_recall = double(),
+#                      train_ppv = double(), valid_ppv = double(),
+#                      train_f1 = double(), valid_f1 = double())
+
+# # Make the target variable numeric classes, starting at 0
+# tfidf_train_target <- as.integer(factor(df_train$president_label)) - 1 #train
+# tfidf_test_target <- as.integer(factor(df_test$president_label)) - 1 #test
+
+# #save a copy of original y-data before hot-coding
+# tfidf_train_target_original <- tfidf_train_target #train
+# tfidf_test_target_original <- tfidf_test_target #test
+
+# #hot-coding
+# tfidf_train_target <- to_categorical(tfidf_train_target ) #train
+# tfidf_test_target <- to_categorical(tfidf_test_target ) #test
+
+# #prepare features
+# tfidf_train_features <- df_train %>% subset(select = -c(president_label)) %>% as.matrix() #train
+# tfidf_test_features <- df_test %>% subset(select = -c(president_label)) %>% as.matrix() #test
+
+# ################################################################################
+# 
+# #DEFINE NUMBER OF FOLDS
+# num_folds <- 5 
+# 
+# #Split the data into k-folds
+# set.seed(104)
+# folds <- createFolds(df_train$president_label, k = num_folds)
+# 
+# #######
+# #GRIDSEARCH
+# for (num_nodes in units_grid) {
+#   for (learning_rate in learning_rate_grid) {
+#     for (dropout in dropout_grid) {
+#        for (activ in activation_grid) { 
+#       ###########################################
+# 
+#       #empty vectors for results at each fold...
+#       
+#       ##accuracy
+#       train_accuracy_values <- numeric(num_folds) #train
+#       valid_accuracy_values <- numeric(num_folds) #validation
+#       
+#       ##recall
+#       train_recall_values <- numeric(num_folds) #train
+#       valid_recall_values <- numeric(num_folds) #validation
+#       
+#       
+#       ##positive predictive value
+#       train_ppv_values <- numeric(num_folds) #train
+#       valid_ppv_values <- numeric(num_folds) #validation
+#       
+#       ##F1-score
+#       train_f1_values <- numeric(num_folds) #train
+#       valid_f1_values <- numeric(num_folds) #validation
+# 
+# 
+#       ###########################################
+#       
+#       #for each fold...
+#       for (fold in 1:num_folds) {
+#         
+#         #extract train and validation folds
+#         train_indices <- unname(unlist(folds[-fold])) #train = all folds except 1 fold
+#         valid_indices <- unname(unlist(folds[fold])) #validation = 1 fold
+#         
+#         #prepare features at each fold 
+#         x_train <- tfidf_train_features[train_indices, ] #train
+#         x_valid <- tfidf_train_features[valid_indices, ] #validation
+#         
+#         #prepare target data at each fold
+#         y_train <- tfidf_train_target[train_indices,] #train
+#         y_valid <- tfidf_train_target[valid_indices,] #validation
+# 
+#       ###########################################
+#         
+#         #fit the model on the training-fold data
+#         #with parameters at the current iteration
+#
+#         ##initialize model
+#         set.seed(104)
+#         nn_model <- keras_model_sequential()
+#         
+#         ##define the model
+#         nn_model %>%
+#           layer_dense(units = num_nodes, activation = activ, input_shape = c(149), #149 features
+#                       kernel_regularizer = regularizer_l1(0.01)) %>%
+#           layer_dropout(rate = dropout) %>%
+#           layer_dense(units = 4, activation = 'softmax')
+# 
+#         ##compile model
+#         nn_model %>% compile(
+#           loss = 'categorical_crossentropy',
+#           optimizer = optimizer_nadam(learning_rate = learning_rate),
+#           metrics = c('Recall', 'Precision', 'accuracy'))
+#       
+#         
+# 
+#         ##train the model on train-fold data
+#         set.seed(104)
+#         history <- nn_model %>% fit(
+#           x_train, y_train,
+#           epochs = 30,
+#           batch_size = 5,
+#           shuffle = TRUE
+#           )
+#         
+#         
+#       ###########################################
+# 
+#         ##Predictions on train data
+#         set.seed(104)
+#         train_metrics <- nn_model %>% evaluate(x_train, y_train)
+#         
+#         # Train confusion matrix
+#         #train_conf_mat <- table(tfidf_train_target_original, train_tfidf_fitted)
+#         
+#         
+#         # #ensure Nan and NA values are 0 --> Nans appear when division by 0
+#         # train_conf_mat$byClass[is.na(train_conf_mat$byClass)] <- 0
+#         # train_conf_mat$byClass[is.nan(train_conf_mat$byClass)] <- 0
+#         
+#         #train metrics
+#         ##Train recall
+#         train_recall <- unname(train_metrics[2])
+#         
+#         ##Train precision
+#         train_ppv <- unname(train_metrics[3])
+#         
+#          ##Train accuracy
+#         train_accuracy <- unname(train_metrics[4])   
+#         
+#         ##F1-score
+#         train_f1_score <- 2 * (train_ppv * train_recall) / (train_ppv + train_recall)
+# 
+# 
+#         #METRICS AT CURRENT FOLD:
+#         ##train recall
+#         train_recall_values[fold] <-  train_recall 
+# 
+#         ##train precision
+#         train_ppv_values[fold] <-  train_ppv
+#         
+#         ##train accuracy
+#         train_accuracy_values[fold] <-  train_accuracy
+#         
+#         ##train f1
+#         train_f1_values[fold] <-  train_f1_score
+# 
+# 
+#         ###########################################
+# 
+#         ##Predictions on valid data
+#         set.seed(104)
+#         valid_metrics <- nn_model %>% evaluate(x_valid, y_valid)
+#         
+#         # valid confusion matrix
+#         #valid_conf_mat <- table(tfidf_valid_target_original, valid_tfidf_fitted)
+#         
+#         
+#         # #ensure Nan and NA values are 0 --> Nans appear when division by 0
+#         # valid_conf_mat$byClass[is.na(valid_conf_mat$byClass)] <- 0
+#         # valid_conf_mat$byClass[is.nan(valid_conf_mat$byClass)] <- 0
+#         
+#         #valid metrics
+#         ##valid recall
+#         valid_recall <- unname(valid_metrics[2])
+#         
+#         ##valid precision
+#         valid_ppv <- unname(valid_metrics[3])
+#         
+#          ##valid accuracy
+#         valid_accuracy <- unname(valid_metrics[4])   
+#         
+#         
+#         ##F1-score
+#         valid_f1_score <- 2 * (valid_ppv * valid_recall) / (valid_ppv + valid_recall)
+# 
+# 
+#         #METRICS AT CURRENT FOLD
 #         ##valid recall
 #         valid_recall_values[fold] <-  valid_recall 
 # 
@@ -2073,16 +3675,16 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 # 
 #       
 # 
-# #save results
-# #saveRDS(results, "data/nn_model_bow_results.rds")
+# # save results
+# saveRDS(results, "data/nn_model_tfidf_resultsss.rds")
 # 
 # ####################################################################
 # 
 # #rename models
-# rownames(results) = paste0("BoW NN model ", 1:nrow(results))
+# rownames(results) = paste0("TFIDF NN model ", 1:nrow(results))
 # 
 # #check for optimal model with best train and validation f1-scores
-# best_results_bow_nn = results %>% filter(train_f1 > 0.8 & valid_f1> 0.6) %>% select(num_nodes,
+# best_results_tfidf_nn = results %>% filter(train_f1 > 0.8 & valid_f1> 0.6) %>% select(num_nodes,
 #                                            drop_out, 
 #                                            activation_function,
 #                                            learning_rate,
@@ -2097,9 +3699,9 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 # 
 # 
 # ####################################################################
-# #rebuild model on entire training set
+# # rebuild model on entire training set
 
-##Set random seed
+# # Set random seed
 # set.seed(104)
 # tensorflow::set_random_seed(104)
 # 
@@ -2109,64 +3711,65 @@ bowNNresults = readRDS("data/nn_model_bow_results.rds")
 # nn_model <- keras_model_sequential()
 # 
 # 
-# ##define the model
+# # # define the model
 # nn_model %>%
-#   layer_dense(units = 100, activation = 'relu', input_shape = c(149), #149 features
+# layer_dense(units = 50, activation = 'tanh', input_shape = c(149), #149 features
 #               kernel_regularizer = regularizer_l1(0.01)) %>%
-#   layer_dropout(rate = 0.1) %>%
+#   layer_dropout(rate = 0.01) %>%
 #   layer_dense(units = 4, activation = 'softmax')
 # 
-# ##compile model
+# # # compile model
 # nn_model %>% compile(
 #   loss = 'categorical_crossentropy',
 #   optimizer = optimizer_nadam(learning_rate = 0.01),
 #   metrics = c('Recall', 'Precision', 'accuracy'))
-# 
-# 
-# 
-# ##train the model on train-fold data
+
+
+# # train the model on train-fold data
 # set.seed(104)
 # history <- nn_model %>% fit(
-#  bag_of_words_train_features, bag_of_words_train_target,
-#   epochs = 30,
-#   batch_size = 5,
-#   shuffle = TRUE
-#   )
-# #plot history
-# plot(history)
+#   tfidf_train_features, tfidf_train_target,
+#    epochs = 30,
+#    batch_size = 5,
+#    shuffle = TRUE
+#    )
+# 
+# # plot history
+#  plot(history)
 
 # ####################################################################
 # 
-# # ##Predictions on test data
+# # Predictions on test data
 # set.seed(104)
-# nn_bow_test_metrics <- nn_model %>% evaluate(bag_of_words_test_features, bag_of_words_test_target)
-# nn_bow_test_metrics
-# 
+# nn_tfidf_test_metrics <- nn_model %>% evaluate(tfidf_test_features,  tfidf_test_target)
+# nn_tfidf_test_metrics
+
+# #Predictions
+# set.seed(104)
+#nn_tfidf_test_fitted <- nn_model %>% predict(tfidf_test_features) %>% k_argmax() %>% as.numeric()
+
 # #Confusion matrix
-# set.seed(104)
-# nn_bow_test_fitted <- nn_model %>% predict(bag_of_words_test_features) %>% k_argmax() %>% as.numeric()
-# nn_bow_neural_network_conf_mat = table(bag_of_words_test_target_original, nn_bow_test_fitted)
-# 
-# 
-# nn_bow_test_ppv = unname(test_metrics[3])
-# nn_bow_test_recall = unname(test_metrics[2])
-# 
-# ##F1-score
-# nn_bow_test_f1_score <- 2 * (test_ppv * test_recall) / (test_ppv + test_recall)
-# nn_bow_test_f1_score
+#nn_tfidf_neural_network_conf_mat = table(tfidf_test_target_original,  nn_tfidf_test_fitted)
 
+# # test precision
+# nn_tfidf_test_ppv = unname(nn_tfidf_test_metrics[3])
 
+# # test recall
+#nn_tfidf_test_recall = unname(nn_tfidf_test_metrics[2])
 
-#save results
-#saveRDS(results, "data/nn_model_bow_results.rds")
+# # F1-score
+#nn_tfidf_test_f1_score <- 2 * (nn_tfidf_test_ppv * nn_tfidf_test_recall) / (nn_tfidf_test_ppv + nn_tfidf_test_recall)
+
+# # save results
+#save.image("data/tfidf_neural_networks.RData")
 
 ######################################################################
 
 #rename models
-rownames(bowNNresults) = paste0("BoW NN model ", 1:nrow(bowNNresults))
+rownames(tfidfNNresults) = paste0("TFIDF NN model ", 1:nrow(tfidfNNresults))
 
 #check for optimal model with best train and validation f1-scores
-nnbest_results = bowNNresults %>% filter(train_f1 > 0.5 & valid_f1> 0.5) %>% select(num_nodes,drop_out, activation_function,learning_rate, L1_regularization, train_accuracy, valid_accuracy,train_ppv,valid_ppv,train_recall,     
+nnbest_results = tfidfNNresults %>% filter(train_f1 > 0.5 & valid_f1> 0.5) %>% select(num_nodes,drop_out, activation_function,learning_rate, L1_regularization, train_accuracy, valid_accuracy,train_ppv,valid_ppv,train_recall,     
 valid_recall, train_f1, valid_f1) %>%arrange(desc(train_f1),desc(valid_f1))  
 
 #round off
@@ -2180,10 +3783,11 @@ nnbest_results$valid_accuracy = round(nnbest_results$valid_accuracy, 3)
 
 ############################################################
 
-
 ```
 
-```{r tblNN}
+```{r resultsNN2}
+#| label: tbl-10
+#| tbl-cap: Best Feed Forward Neural Network models, using TF-IDF features and sorted in descending order of training and validation F1-score
 
 #colnames
 colnames(nnbest_results) = c("Input nodes", "Drop-out rate", "Activation function","Learning rate", "L1 regularization", "Train accuracy", "Validation accuracy","Train precision", "Validation precision", "Train recall", "Validation recall", "Train F1-score","Validation F1-score")
@@ -2193,73 +3797,155 @@ nnbest_results = nnbest_results %>% select(`Input nodes`, `Drop-out rate`, `Acti
 `Train F1-score`, `Validation F1-score`, `Train accuracy`, `Validation accuracy`, `Train recall`, `Validation recall`, `Train precision`, `Validation precision`)
 
 #print table
-kable(nnbest_results[1:5,], caption="Table 5: Best Feed Forward Neural Network models, using bag-of-word features and sorted in descending order of training and validation F1-score.")
+kable(nnbest_results[1:5,], caption="")
+
+####################
+
 ```
 
-```{r bowNN2, eval=T, include=F}
-#load in data
-load("data/bow_neural_networks.RData")
-
-# Compute the test accuracy
-all_results[5, "test_accuracy"] <- round(sum(diag(nn_bow_neural_network_conf_mat)),3)
-
-# Compute the test recall
-all_results[5, "test_recall"] <- round(nn_bow_test_recall, 3)
-
-# Compute the test positive predictive value or "precision"
-# Compute the test positive predictive value or "precision"
-all_results[5, "test_precision"] <- round(nn_bow_test_ppv, 3)
-
-# Compute the test F1-score
-all_results[5, "test_f1"] <- round(nn_bow_test_f1_score, 3)
+```{r tfidfNN2, eval=T, include=F}
+#get all models results on test set
+all_results = readRDS("data/test_performance.rds")
 
 #model ID of best sub model
-#all_results[5, "model_ID"] = rownames(best_results)[1]
+all_results[10, "model_ID"] = rownames(nnbest_results)[1]
+
+#save results again:
+saveRDS(all_results, "data/test_performance.rds")
+
+#load test set performance for BoW model
+load("data/tfidf_neural_networks.RData")
+all_results = readRDS("data/test_performance.rds")
+
 
 #parameters of best sub model
-#all_results[5, "parameters"] = rownames(best_results)[1]
+all_results[10, "parameters"] = paste(paste0(c("Input nodes = ", 
+                "Learning rate = ", 
+                "activation function = ", 
+                "L1 regularization = "), 
+              unname(nnbest_results[1, 1:4])), 
+              collapse=", ")
 
-```
-
+# Compute the test accuracy
+all_results[10, "test_accuracy"] <- round(sum(diag(nn_tfidf_neural_network_conf_mat))/sum(nn_tfidf_neural_network_conf_mat),3)
 
-# Conclusion
+# Compute the test recall
+all_results[10, "test_recall"] <- round(nn_tfidf_test_recall, 3)
 
-In EDA (**Figure 5** above), we see differences in the average number of words used in a sentence for each president,this might be useful to include as a feature when training the models.
+# Compute the test positive predictive value or "precision"
+# Compute the test positive predictive value or "precision"
+all_results[10, "test_precision"] <- round(nn_tfidf_test_ppv, 3)
 
-# Addendum
+# Compute the test F1-score
+all_results[10, "test_f1"] <- round(nn_tfidf_test_f1_score, 3)
 
-
-```{r addendum1, eval=T, fig.show=T, fig.cap= "Figure i: Tree diagram showing results of the best bag-of-words classification sub-model, built on the entire training set after the grid search was performed using 5-fold cross validation."}
-
-#tree plot of BOW tree model
-prp(bow_tree_fit, cex=0.4, type=0,col="darkgreen",
-    extra=1, #display number of observations for each terminal node
-    digits=1)
-
-all_results
 
 ```
 
 
 <br>
 
-![Figure ii: BoW Neural Net model 55 trained using the full training data set](images/bowNN.png){fig-align="center" width="150%"}
+## Test Set Model Performance
+
+
+```{r, include=F, eval=T}
+colnames(all_results) = c("Model ID", 
+                "Parameters",
+                "Test Accuracy",
+                "Test-F1",
+                "Test Precision",
+                "Test Recall")
+
+```
+
+
+In @tbl-11 below we see the model performance on the test set. The neural net model 42, using the TF-IDF fetaures outperformed all other models. @fig-10 in **Addendum A** shows the confusion matrix of TF-IDF NN model 42.
+
+
+```{r test}
+#| label: tbl-11
+#| tbl-cap: Model performance on the test set when training the best performing models on the full training set
+
+kable(all_results)
+
+```
+
+
+# Discussion
+
+## Training and Validation Model Performance
+
+For the BoW @tbl-1 and TF-IDF @tbl-6 classification trees we see that the training performance is generally better than the validation performance, suggestive of model overfitting, where the model does not generalize well to the validation data. We see a similar trend for the XGBoost models ( BoW @tbl-3 and TF-IDF @tbl-8 ).
+
+We see two interesting clusters in the tree diagrams in @fig-6 (BoW) and @fig-8 (TF-IDF) of **Addendum A**, which suggests that the unigram "health" is an important feature in the sentences of Ramaphosa (2018-present), which is in accordance with the Covid-19 pandemic. In addition, "peace" is an important feature in the sentences of Mandela (1994-1999), which is in accordance with the end of the Apartheid era (1994).
+
+For the BoW (@tbl-2) and TF-IDF (@tbl-7) Random Forest models, we see a trend where the validation metrics are similar to the training metrics, where all metrics have a value above 0.6 suggesting good model fit. These models generalize well to the validation data.
+
+The Naive Bayesian models (BoW, @tbl-4 and TF-IDF, @tbl-9 ) have poor model fit on the training data, and does not generalize well to the validation data.
+
+For the BoW **(** @tbl-5 and @fig-7 in **Addendum A )** and TF-IDF (@tbl-10 and @fig-9 in **Addendum A)** Neural Network models, we see the log loss decreases to 0, as the number of epochs increase, whereas the training- recall, precision and accuracy values increase towards a maximum value. This suggests that the loss has been minimized and the performance, maximized.
+
+## Test Set Model Performance
+
+The overall best model (Neural Net model 42, using the TF-IDF features) (@tbl-11), outperformed all other models with a test F1-score of 0.632. This model also had the best test set accuracy (0.639). However, the model's test precision score of 0.653 felt short of the neural net model 55, using BoW features (0.709). In addition, NN model 42 had a test recall of 0.611, which felt short of the random forest model 2 using TF-IDF features, with a recall of 0.620.
+
+The neural net models and the random forest models for both BoW and TF-IDF generalized well to the unseen, test data, with performance metrics above 0.6 in most cases. This suggests that in most cases these models can correctly predict the president who said a sentence.
+
+The classification trees and XGBoost models had sub-optimal performance, which suggests that these models do not generalize as well to the unseen, test data. In addition, the Naïve Bayesian models have very poor model fit and do not generalize well to the unseen, test data. These sub-optimal and poorly fit models may be over-fitting the training data. As a result, the model does not "learn" but memorizes the characteristics of the training data.
+
+In general, we also see a trend where in most cases the TF-IDF models outperform the BoW models, which may indicate that word importance is a better feature choice than word frequency.
+
+# Conclusion
+
+In this comparative analysis of different classifiers and features, the neural net model with TF-IDF features demonstrated the highest performance in terms of test F1-score and accuracy. In addition, the neural net and random forest models also showed good generalization to unseen data. Notably, models trained on TF-IDF features performed better than those using BoW features. In future, one should consider additional features such as the average number of words used in a sentence by each president, along with sentiment and topical features, to potentially improve the model's performance.
+
+# Addendum
+
+
+```{r addendum1, eval=T, fig.show=T, fig.cap= "Tree diagram showing results of the best bag-of-words classification sub-model, built on the entire training set after the grid search was performed using 5-fold cross validation."}
+#| label: fig-6
+#tree plot of BOW tree model
+prp(bow_tree_fit, cex=0.4, type=0,col="darkgreen",
+    extra=1, #display number of observations for each terminal node
+    digits=1)
+
+
+```
+
+
+<br>
+
+![BoW Neural Net model 55 trained using the full training data set](images/bowNN.png){#fig-7 fig-align="center" width="100%"}
+
+<br>
+
+
+```{r addendum2, eval=T, fig.show=T, fig.cap= "Tree diagram showing results of the best TF-IDF classification sub-model, built on the entire training set after the grid search was performed using 5-fold cross validation."}
+#| label: fig-8
+#tree plot of BOW tree model
+prp(tfidf_tree_fit, cex=0.4, type=0,col="darkgreen",
+    extra=1, #display number of observations for each terminal node
+    digits=1)
+```
+
+
+<br>
+
+![TF-IDF Neural Net model 42 trained using the full training set](images/tfidfNN.png){#fig-9}
+
+<br>
+
+
+```{r addendum3, fig.cap="Confusion matrix of the best performing neural net model 42, trained using TF-IDF features. Here the factor levels are shown, where: (0) Mandela, (1) Mbeki, (2) Ramaphosa, (3) Zuma. The rows represent the original classes and the columns represent the fitted classes."}
+#| label: fig-10
+kable(nn_tfidf_neural_network_conf_mat)
+
+
+```
+
 
 # References
 
-1.     Ibm.com. (2023). *What is Text Mining? \| IBM*. \[online\] Available at: https://www.ibm.com/. \[Accessed 14 Oct. 2023\].
-
-2.     Greenbook.org. (2017). *Text Analytics: A Primer*. \[online\] Available at: https://www.greenbook.org/insights/market-research-leaders/text-analytics-a-primer \[Accessed 14 Oct. 2023\].
-
-3.     Dogra, V., Verma, S., Kavita Kavita, Chatterjee, P., Shafi, J., Choi, J. and Muhammad Fazal Ijaz (2022). A Complete Process of Text Classification System Using State-of-the-Art NLP Models. Computational Intelligence and Neuroscience, \[online\] 2022, pp.1--26. doi:https://doi.org/10.1155/2022/1883698.
-
-4.     Mohamed Amine Boukhaled and Jean-Gabriel Ganascia (2017). Stylistic Features Based on Sequential Rule Mining for Authorship Attribution. \[online\] doi:https://doi.org/10.1016/b978-1-78548-253-3.50008-1.
-
-5.     www.gov.za. (2023). *State of the Nation Address \| South African Government*. \[online\] Available at: https://www.gov.za/state-nation-address \[Accessed 14 Oct. 2023\].
-
-6.     Shukri, N. (2021). Author Prediction in Text Mining of the Opinion Articles in Arabic Newspapers. \[online\] 16(2), pp.1-05. doi:https://doi.org/10.9790/2834-1602020105.
-
-7.     Bauersfeld, L., Romero, A., Manasi Muglikar and Davide Scaramuzza (2023). Cracking double-blind review: Authorship attribution with deep learning. PLOS ONE, \[online\] 18(6), pp.e0287611--e0287611. doi: https://doi.org/10.1371/journal.pone.0287611.
-
-8.     Khalid, N. (2021). AUTHOR IDENTIFICATION BASED ON NLP. *European Journal of Computer Science and Information Technology*, \[online\] 9(1), pp.1--26. Available at: https://www.eajournals.org/wp-content/uploads/Author-Identification-Based-on-NLP.pdf.
+::: {#refs}
+:::
 

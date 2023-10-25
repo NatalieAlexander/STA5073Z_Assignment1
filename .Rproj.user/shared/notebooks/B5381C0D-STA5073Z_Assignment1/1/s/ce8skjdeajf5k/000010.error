@@ -1,1 +1,0 @@
-{"frames":[{"func":"rpart(president_label ~ ., df_train_fold, control = rpart.control(minsplit = minspl, \n    minbucket = minbuck, cp = cp_val), method = \"class\")","file":"","line_number":0,"end_line_number":0,"character_number":0,"end_character_number":0}],"message":"Error : object 'valid_metrics' not found\n"}

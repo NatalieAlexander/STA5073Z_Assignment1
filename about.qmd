@@ -23,7 +23,8 @@ Welcome to my website, where I proudly present my Data Science for Industry cour
 <br>
 [Click here to re-direct to the GitHub repository](https://github.com/NatalieAlexander/STA5073Z_Assignment1)
 <br>
-[Click here to re-direct to the website](add website)
+[Click here to re-direct to the website](https://nataliealexander.github.io/STA5073Z_Assignment1/)
+
 ##
 
 <div style="text-align:center">

@@ -8,8 +8,7 @@ website:
     left:
         - href: about.qmd
           text: "About"
-        - href: STA5073Z_Assignment1.qmd
-          text: "Report"
+        - STA5073Z_Assignment1.qmd
         
 
 format:

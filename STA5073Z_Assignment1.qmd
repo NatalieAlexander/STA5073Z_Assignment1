@@ -1,5 +1,5 @@
 ---
-title: "Data Science for Industry (STA5073Z)" 
+title: "Data Science for Industry Report" 
 subtitle: "Assignment 1"
 author: "Natalie Bianca Alexander"
 format: 

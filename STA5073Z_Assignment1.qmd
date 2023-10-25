@@ -3860,7 +3860,7 @@ In general, we also see a trend where in most cases the TF-IDF models outperform
 
 In this comparative analysis of different classifiers and features, the neural net model with TF-IDF features demonstrated the highest performance in terms of test F1-score and accuracy. In addition, the neural net and random forest models also showed good generalization to unseen data. Notably, models trained on TF-IDF features performed better than those using BoW features. In future, one should consider additional features such as the average number of words used in a sentence by each president, along with sentiment and topical features, to potentially improve the model's performance.
 
-# Addendum
+# Addendum A
 
 ```{r addendum1, eval=T, fig.show=T, fig.cap= "Tree diagram showing results of the best bag-of-words classification sub-model, built on the entire training set after the grid search was performed using 5-fold cross validation."}
 #| label: fig-6

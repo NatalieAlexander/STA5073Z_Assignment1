@@ -131,17 +131,17 @@ sona = sona %>% filter(!(president_label %in% c("Motlanthe", "deKlerk")))
 
 # Abstract
 
-Text mining refers to the process of transforming unstructured text data into structured clusters of information. This project explores a specific aspect of text mining known as authorship attribution, which involves analyzing linguistic and stylistic features of text to predict its author. This project uses transcription data from South African State of the Nation Address (SONA) speeches, delivered by presidents between 1994 to 2023. The primary goal was to develop a classification model that takes a sentence from a SONA speech as input and correctly predicts the president who said it. Various models were trained, such as Classification Trees, and Random Forests, in addition to XGBoost- , Naïve Bayesian- and Feed Forward Neural Network models. I find that the neural net model, with TF-IDF features outperformed all other models with a test F1-score of 0.632 and a test accuracy of 0.639.
+Text mining refers to the process of transforming unstructured text data into structured clusters of information. This project explores a specific aspect of text mining known as authorship attribution, which involves analyzing linguistic and stylistic features of text to predict its author. This project uses transcription data from South African State of the Nation Address (SONA) speeches, delivered by presidents between 1994 to 2023. The primary goal was to develop a classification model that takes a sentence from a SONA speech as input and correctly predicts the president who said it. Various models were trained, such as Classification Trees, and Random Forests, in addition to XGBoost- , Naïve Bayesian- and Feed Forward Neural Network models. I find that the Neural Net model, with TF-IDF features outperformed all other models with a test F1-score of 0.632 and a test accuracy of 0.639.
 
 # Introduction
 
-Text mining is a branch of Artificial Intelligence (AI) that aims to transform unstructured text data into structured formats, and aims to uncover textual patterns within unstructured data [@ibm2023].
+Text mining is a branch of Artificial Intelligence (AI) that aims to transform unstructured text data into structured formats [@ibm2023]. Text mining employs a variety of statistical and machine learning methods, including deep learning algorithms. These methods are used to uncover textual patterns, trends, and hidden relationships within unstructured data.
 
-Modern text mining employs machine learning methods and Natural Language Processing (NLP) e.g., part-of-speech tagging [@greenbook2017]. Advancements in text mining is largely attributed to the exponential growth in data, with approximately 80% of global data residing in unstructured formats. This vast amount of data necessitated the use of text mining in data analytics.
+Modern text mining employs Natural Language Processing (NLP) e.g., part-of-speech tagging [@greenbook2017]. These advancements in text mining are largely attributed to the exponential growth in data, with approximately 80% of global data residing in unstructured formats. This vast amount of data necessitated the use of text mining in fields such as data analytics.
 
-Text mining is particularly useful in large organizations where decision-making is central and time is limiting [@ibm2023]. The many applications of text mining has led to the development of several models, including supervised, and unsupervised methods [@dogra2022]. However, the choice of the most effective model is a complex task.
+Text mining is particularly useful in large organizations where decision-making is central and time is limiting [@ibm2023]. The many applications of text mining in numerous fields have led to the development of several models, including supervised, and unsupervised methods [@dogra2022]. However, the choice of the most effective model remains a complex task.
 
-The aim of this project is to identify the most effective classification model to predict which present said a specific sentence. The models are trained on transcription data that includes the State of the Nation Address (SONA) speeches delivered by presidents between 1994 to 2023 [@govza2023]. SONA serves as an annual opening to South African Parliament, where the President reports on the socio-economic state of the nation to a joint sitting of Parliament. The main objective is to train a model that has relatively good test- F1-score and accuracy.
+The aim of this project is to identify the most effective classification model to predict which president said a specific sentence. The models are trained on transcription data that includes the State of the Nation Address (SONA) speeches delivered by presidents between 1994 to 2023 [@govza2023]. SONA serves as an annual opening to South African Parliament, where the President reports on the socio-economic state of the nation to a joint sitting of Parliament. The main objective is to train models that can take in a SONA sentence and accurately predict the president who said it, with a relatively good test- F1-score and accuracy.
 
 # Literature Review
 
@@ -149,7 +149,7 @@ Several studies have used machine learning methods for author classification [@b
 
 Feature selection plays an important role in author classification, where features are broadly categorized into lexical features (e.g., word usage) and syntactic features (e.g., part-of-speech tags). Some studies have also used semantic features (e.g., topics and sentiments).
 
-An article by Shukri, (2021) [@shukri2021] suggests a method for author classification, by training models on 8109 articles from 428 authors for the period 2016 to 2021. Their NN model achieved the highest accuracy of 81.1%.
+An article by Shukri, (2021) [@shukri2021] trained models on 8109 Arabic opinion articles from 428 authors for the period 2016 to 2021. Their NN model achieved the highest accuracy of 81.1%.
 
 Bauersfeld et al., (2023) [@bauersfeld2023] proposed a transformer-based, neural-network architecture that uses text content and author names in the bibliography to determine the author of an anonymous manuscript. The authors used all research papers publicly available on arXiv and achieved a 73% accuracy rate.
 
@@ -629,7 +629,7 @@ grid.arrange(plot_twenty_bigrams_mandela,
 
 ### Average speech and Sentence Length
 
-@fig-5 below shows the **(a)** average speech length per president and **(b)** the average sentence length per president. In @fig-5 **(a)** we see that Ramaphosa has a relatively long average speech length (327 sentences per speech), followed by Zuma (266), Mbeki (242) and Mandela (238). In @fig-5 **(b)** we see that Mbeki has the largest average sentence length (30 words per sentence), followed by Mandela (25) , Ramaphosa (22) and Zuma (19).
+@fig-5 below shows the **(a)** average speech length per president and **(b)** the average sentence length per president. In @fig-5 **(a)** we see that Ramaphosa has a relatively long average speech length (327 sentences per speech), followed by Zuma (266), Mbeki (242) and Mandela (238). In @fig-5 **(b)** we see that Mbeki has the longest average sentence length (30 words per sentence), followed by Mandela (25) , Ramaphosa (22) and Zuma (19).
 
 ```{r eda3, eval=T, include=F}
 
@@ -787,7 +787,7 @@ df_test = subset(df_test, select=-sentence_id)
 
 In @tbl-1 below, we see the results of the best performing classification trees for the BoW features.
 
-We see that model 1 and 2 both have the best mean CV F1-score of 0.546 and a training F1-score of 0.749. These models also have the best mean CV accuracy of 0.565 and a training accuracy of 0.751. These models perform better than the other models with regards to the other metrics as well. Model 1 parameters were chosen to re-train the model on the full training set. The results of training can be seen in the BoW tree diagram in @fig-6 .
+We see that model 1 and 2 both have the best mean CV F1-score of 0.546 and a training F1-score of 0.749. These models also have the best mean CV accuracy of 0.565 and a training accuracy of 0.751. These models perform relatively well on the other metrics as well. Model 1 parameters were chosen to re-train the model on the full training set. The results of training can be seen in the BoW tree diagram in @fig-6 .
 
 ```{r bowClassTree, eval=T, include=F}
 

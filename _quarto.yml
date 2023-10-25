@@ -5,14 +5,13 @@ project:
 website:
   title: "Data Science for Industry"
   navbar:
+    search: true
     left:
-        - href: about.qmd
-          text: "About"
-        - STA5073Z_Assignment1.qmd
-        
+      - about.qmd
+      - STA5073Z_Assignment1.qmd
 
 format:
   html:
+    theme: journal
     css: styles.css
     toc: true
-    theme: journal

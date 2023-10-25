@@ -4,7 +4,8 @@ Welcome to the repository for Assignment 1 of the STA5073Z course. This reposito
 
 ## 📂 Contents
 
-- **STA5073Z_Assignment1.qmd** and **STA5073Z_Assignment1.html**: These files can be found in the `/docs` folder.
+- **STA5073Z_Assignment1.html**: Found in the `/docs` folder.
+- **STA5073Z_Assignment1.qmd**: Found in the main folder.
 
 ## 🔗 Useful Links
 

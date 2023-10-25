@@ -1,12 +1,15 @@
-# STA5073Z_Assignment1
-This repository includes all data files and code related to Assignment 1 for the STA5073Z course.
+# 📚 STA5073Z Assignment 1
 
-## Find Files:
-1. STA5073Z_Assignment1.qmd and STA5073Z_Assignment1.html in the /docs folder
+Welcome to the repository for Assignment 1 of the STA5073Z course. This repository contains all the necessary data files and code related to the assignment.
 
-## Links
-1. GitHub repo: https://github.com/NatalieAlexander/STA5073Z_Assignment1
+## 📂 Contents
 
-2.1 GitHub webpages website: https://nataliealexander.github.io/STA5073Z_Assignment1/
+- **STA5073Z_Assignment1.qmd** and **STA5073Z_Assignment1.html**: These files can be found in the `/docs` folder.
 
-2.2. Landing page: https://nataliealexander.github.io/STA5073Z_Assignment1/about.html
+## 🔗 Useful Links
+
+- GitHub Repository: https://github.com/NatalieAlexander/STA5073Z_Assignment1
+- GitHub Pages Website: https://nataliealexander.github.io/STA5073Z_Assignment1/
+- Landing Page: https://nataliealexander.github.io/STA5073Z_Assignment1/about.html
+  
+Feel free to explore and reach out if you have any questions or issues! 😊

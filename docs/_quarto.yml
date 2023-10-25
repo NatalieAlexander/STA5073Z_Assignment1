@@ -9,6 +9,7 @@ website:
         - href: about.qmd
           text: "About"
         - STA5073Z_Assignment1.qmd
+          text: "Report"
         
 
 format:
